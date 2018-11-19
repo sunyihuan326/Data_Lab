@@ -110,7 +110,8 @@ def get_work_years_distribution():
 
 def work_years_numbers(work_years_count):
     '''
-    :param work_years_count: 每工作年限的人数
+    输出各工作年限段总人数
+    :param work_years_count: 每工作年限的人数，由get_work_years_distribution()获得
     :return:
     count_13：1-3年的人数
     count_45：4-5年的人数
