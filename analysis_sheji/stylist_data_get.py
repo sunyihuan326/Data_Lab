@@ -8,9 +8,10 @@ from pymongo import MongoClient
 import time
 from bson.objectid import ObjectId
 
-mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717, unicode_decode_error_handler='ignore')
-mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')
-mdb = mdbs['sheji']
+mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
+                   unicode_decode_error_handler='ignore')  # 链接mongodb
+mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
+mdb = mdbs['sheji']  # 链接sheji
 
 
 # c_ = mdb.person.find({"work_year": {'$gt': "0"}}).count()
@@ -108,13 +109,24 @@ def get_work_years_distribution():
 
 
 def work_years_numbers(work_years_count):
+    '''
+    :param work_years_count: 每工作年限的人数
+    :return:
+    count_13：1-3年的人数
+    count_45：4-5年的人数
+    count_69：6-9年的人数
+    count_1015：10-15年的人数
+    count_1625：16-25年的人数
+    count_2645：25-45年的人数
+    count_46：46年以上的人数
+    '''
     count_13 = 0
     count_45 = 0
     count_69 = 0
     count_1015 = 0
     count_1625 = 0
     count_2645 = 0
-    count_26 = 0
+    count_46 = 0
     for k in work_years_count.keys():
         if int(k) > 0 and int(k) <= 3:
             count_13 = count_13 + work_years_count[k]
@@ -129,8 +141,8 @@ def work_years_numbers(work_years_count):
         elif int(k) > 25 and int(k) <= 45:
             count_2645 += work_years_count[k]
         else:
-            count_26 += work_years_count[k]
-    return count_13, count_45, count_69, count_1015, count_1625, count_2645, count_26
+            count_46 += work_years_count[k]
+    return count_13, count_45, count_69, count_1015, count_1625, count_2645, count_46
 
 
 def get_slon_and_stylists():
@@ -149,6 +161,3 @@ def get_slon_and_stylists():
     slons_count = len(slon_stylist.keys())
     stylists_count = sum(slon_stylist.values())
     return slons_count, stylists_count
-
-
-print(get_slon_and_stylists())
