@@ -14,7 +14,7 @@ mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账
 mdb = mdbs['sheji']  # 链接sheji
 
 
-# c_ = mdb.person.find({"work_year": {'$gt': "0"}}).count()
+# c_ =mdb.person.find({"level": {'$ne': ""}}).count()
 # print(c_)
 
 # id 转换objectid
@@ -162,3 +162,56 @@ def get_slon_and_stylists():
     slons_count = len(slon_stylist.keys())
     stylists_count = sum(slon_stylist.values())
     return slons_count, stylists_count
+
+
+def levels_distribution():
+    leves_count = {}
+    stylists = mdb.person.find({"level": {'$ne': ""}})
+    for s in stylists:
+        level_s = s["level"]
+        if level_s not in leves_count.keys():
+            leves_count[level_s] = 1
+        else:
+            leves_count[level_s] = leves_count[level_s] + 1
+    return leves_count
+
+
+def work_start_time_distribution():
+    work_start_count = {}
+    stylists = mdb.person.find({"work_start": {'$ne': ""}})
+    for s in stylists:
+        w_s = s["work_start"]
+        if w_s not in work_start_count.keys():
+            work_start_count[w_s] = 1
+        else:
+            work_start_count[w_s] = work_start_count[w_s] + 1
+    return work_start_count
+
+
+def work_end_time_distribution():
+    work_end_count = {}
+    stylists = mdb.person.find({"work_end": {'$ne': ""}})
+    for s in stylists:
+        w_s = s["work_end"]
+        if w_s not in work_end_count.keys():
+            work_end_count[w_s] = 1
+        else:
+            work_end_count[w_s] = work_end_count[w_s] + 1
+    return work_end_count
+
+
+def work_time_distribution():
+    work_end_count = {}
+    stylists = mdb.person.find({"work_end": {'$ne': ""}, "work_start": {'$ne': ""}})
+    for s in stylists:
+        try:
+            w_s_s = s["work_start"]
+            w_e_s = s["work_end"]
+            work_time = str(int(w_e_s.split(":")[0]) - int(w_s_s.split(":")[0]))
+            if work_time not in work_end_count.keys():
+                work_end_count[work_time] = 1
+            else:
+                work_end_count[work_time] = work_end_count[work_time] + 1
+        except:
+            print(s["work_start"])
+    return work_end_count
