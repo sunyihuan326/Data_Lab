@@ -94,7 +94,7 @@ def get_cut_styles_distribution():
 
 def get_work_years_distribution():
     '''
-    :return: work_years_count：每个工作年限的人数
+    :return: work_years_count：每个工作年限的人数，数据类型为：dict
     '''
     work_years_count = {}
     stylists = mdb.person.find({"work_year": {'$gt': "0"}})
@@ -165,6 +165,10 @@ def get_slon_and_stylists():
 
 
 def levels_distribution():
+    '''
+    发型师等级分布
+    :return: 发型师的等级，及对应的人数，数据类型为：dict
+    '''
     leves_count = {}
     stylists = mdb.person.find({"level": {'$ne': ""}})
     for s in stylists:
@@ -177,6 +181,10 @@ def levels_distribution():
 
 
 def work_start_time_distribution():
+    '''
+    发型师工作开始时间分布
+    :return: work_start_count：发型师工作的开始时间，及对应人数，数据类型为：dict
+    '''
     work_start_count = {}
     stylists = mdb.person.find({"work_start": {'$ne': ""}})
     for s in stylists:
@@ -189,6 +197,10 @@ def work_start_time_distribution():
 
 
 def work_end_time_distribution():
+    '''
+    发型师工作结束时间分布
+    :return: work_end_count：发型师工作的结束时间，及对应人数，数据类型为：dict
+    '''
     work_end_count = {}
     stylists = mdb.person.find({"work_end": {'$ne': ""}})
     for s in stylists:
@@ -201,13 +213,17 @@ def work_end_time_distribution():
 
 
 def work_time_distribution():
+    '''
+    发型师每日工作时间分布，时间单位为小时h
+    :return: work_end_count：发型师工作的结束时间，及对应人数，数据类型为：dict
+    '''
     work_end_count = {}
     stylists = mdb.person.find({"work_end": {'$ne': ""}, "work_start": {'$ne': ""}})
     for s in stylists:
         try:
             w_s_s = s["work_start"]
             w_e_s = s["work_end"]
-            work_time = str(int(w_e_s.split(":")[0]) - int(w_s_s.split(":")[0]))
+            work_time = str(int(w_e_s.split(":")[0]) - int(w_s_s.split(":")[0])) + "h"
             if work_time not in work_end_count.keys():
                 work_end_count[work_time] = 1
             else:
@@ -215,3 +231,28 @@ def work_time_distribution():
         except:
             print(s["work_start"])
     return work_end_count
+
+
+def poster_uv_everyday(day_time):
+    '''
+    海报使用次数、人数
+    :param day_time:某一天，格式为："2018-11-21"
+    :return: posters_pv：海报使用次数, poster_uv：海报使用人数
+    '''
+    start_time = day_time + " 00:00:00"
+    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+    star_timeStamp = int(time.mktime(start_timeArray))
+
+    end_time = day_time + " 23:59:59"
+    end_timeArray = time.strptime(end_time, "%Y-%m-%d %H:%M:%S")
+    end_timeStamp = int(time.mktime(end_timeArray))
+
+    posters = mdb.log_poster.distinct("uid", {"ctime": {"$gte": star_timeStamp, "$lt": end_timeStamp}})  # 使用海报的uid
+    poster_uv = len(posters)  # 海报使用人数
+
+    posters_pv = mdb.log_poster.find({"ctime": {"$gte": star_timeStamp, "$lt": end_timeStamp}}).count()  # 海报使用次数
+
+    return posters_pv, poster_uv
+
+
+print(poster_uv_everyday('2018-11-22'))
