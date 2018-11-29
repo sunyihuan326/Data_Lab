@@ -87,7 +87,44 @@ def get_everday_poster_using(day_time):
     return p_uv, p_pv
 
 
-print(poster_uv_everyday_distribution("2018-11-23"))
+def poster_using_time():
+    '''
+    海报使用次数、人数
+    :param day_time:某一天，格式为："2018-11-21"
+    :return: posters_pv：海报使用次数, poster_uv：海报使用人数
+    '''
+
+    posters_pv = mdb.log_poster.find({"ctime": {"$gte": 1514736000}})
+    posters_time_using = {}
+    for p in posters_pv:
+        p_time = p["ctime"]
+        p_time_str = time.strftime("%Y--%m--%d %H:%M:%S", time.localtime(p_time))
+        p_time_ = str(p_time_str.split(":")[0]).split(" ")[-1]
+        if str(p_time_) not in posters_time_using.keys():
+            posters_time_using[p_time_] = 1
+        else:
+            posters_time_using[p_time_] += 1
+
+    return posters_time_using
+
+
+def data_bar(data_classes, data_value, data_label):
+    import matplotlib.pyplot as plt
+    plt.bar(data_classes, data_value, label=data_label)
+    plt.legend()
+
+    plt.xlabel('time')
+    plt.ylabel('value')
+    plt.show()
+
+
+# print(poster_uv_everyday_distribution("2018-11-23"))
 # print(poster_uv_everyday("2018-11-23"))
 
 # print(get_everday_poster_using("20181123"))
+#
+# poster_using_time = poster_using_time()
+# data_classes = poster_using_time.keys()
+# data_value = poster_using_time.values()
+# data_label = "poster_using_time"
+# data_bar(data_classes, data_value, data_label)
