@@ -89,9 +89,7 @@ def get_everday_poster_using(day_time):
 
 def poster_using_time():
     '''
-    海报使用次数、人数
-    :param day_time:某一天，格式为："2018-11-21"
-    :return: posters_pv：海报使用次数, poster_uv：海报使用人数
+    海报使用时间分布
     '''
 
     posters_pv = mdb.log_poster.find({"ctime": {"$gte": 1514736000}})
