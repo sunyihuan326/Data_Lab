@@ -19,7 +19,6 @@ def twice_buy_vip():
     二次及以上购买vip人数
     :return:
     '''
-
     orders = mdb.wx_order.find({"status": 1})
     orders_count = {}
     t_count = 0
@@ -54,17 +53,18 @@ def basic_data(start_time="2018-12-5", end_time="2019-01-01"):
     vip_nums = mdb.wxuser.find({"expireat": {"$gte": star_timeStamp}}).count()
     mobile_nums = mdb.wxuser.find({"mobile": {"$gte": "1"}}).count()
     buy_vip_nums = len(mdb.wx_order.distinct("uid", {"status": 1}))
-    print("已存入手机号码数： ", mobile_nums)
-    print("购买过VIP人数： ", buy_vip_nums)
-    print("当前VIP人数： ", vip_nums)
     one_month_expire = mdb.wxuser.find({"expireat": {"$gte": star_timeStamp, "$lt": end_timeStamp}}).count()
-    print("一个月内到期的人数： ", one_month_expire)
+    return mobile_nums, buy_vip_nums, vip_nums, one_month_expire
 
 
 if __name__ == "__main__":
     start_time = "2018-12-5"
     end_time = "2019-1-5"
-    basic_data(start_time, end_time)
+    mobile_nums, buy_vip_nums, vip_nums, one_month_expire = basic_data(start_time, end_time)
+    print("已存入手机号码人数： ", mobile_nums)
+    print("购买过VIP人数： ", buy_vip_nums)
+    print("当前VIP人数： ", vip_nums)
+    print("一个月内到期的人数： ", one_month_expire)
 
     t_count = twice_buy_vip()
     print("二次购买人数： ", t_count)
