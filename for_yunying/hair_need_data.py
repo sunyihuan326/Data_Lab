@@ -12,6 +12,7 @@ import time
 from bson.objectid import ObjectId
 import xlwt
 import xlrd
+import tqdm
 
 
 def id2ObjectId(_id):
@@ -100,10 +101,10 @@ def get_hair_need_nums(day_time, n):
     star_timeStamp = int(time.mktime(start_timeArray))
 
     sh.write(0, 0, "日期")
-    sh.write(0, 1, "网络设计总数")
+    sh.write(0, 1, "网络设计总数(已经成功提交)")
     sh.write(0, 2, "网络设计拼团成功总数")
     sh.write(0, 3, "网络设计付费总单数")
-    sh.write(0, 4, "网络设计免费总单数")
+    sh.write(0, 4, "网络设计免费总单数（已经成功提交）")
     sh.write(0, 5, "网络设计方案查看量")
     sh.write(0, 6, "网络设计超时订单量")
 
@@ -118,33 +119,38 @@ def get_hair_need_nums(day_time, n):
         star_timeStamp_new = i * 86400 + star_timeStamp
 
         # 网络客总订单量
-        needs = mdb.xm_hair_need.find({"source": 2, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
-                                                              "$lt": ts2utcdatetime(
-                                                                  star_timeStamp_new + 86400)}}).count()
+        needs = mdb.xm_hair_need.find(
+            {"source": 2, "status": {"$gte": 100}, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
+                                                             "$lt": ts2utcdatetime(
+                                                                 star_timeStamp_new + 86400)}}).count()
         # 网络客拼团成功订单量
         needs_pintuan = mdb.xm_hair_need.find(
-            {"source": 2, "group": 1, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
-                                                "$lt": ts2utcdatetime(
-                                                    star_timeStamp_new + 86400)}}).count()
+            {"source": 2, "status": {"$gte": 100}, "group": 1, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
+                                                                         "$lt": ts2utcdatetime(
+                                                                             star_timeStamp_new + 86400)}}).count()
         # 网络客付费订单量
         needs_fufei = mdb.xm_hair_need.find(
-            {"source": 2, "depth_price": {"$gt": 0}, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
-                                                               "$lt": ts2utcdatetime(
-                                                                   star_timeStamp_new + 86400)}}).count()
-        # 网络客免费订单量
+            {"source": 2, "status": {"$gte": 100}, "depth_price": {"$gt": 0},
+             "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
+                       "$lt": ts2utcdatetime(
+                           star_timeStamp_new + 86400)}}).count()
+
         needs_mianfei = mdb.xm_hair_need.find(
-            {"source": 2, "depth_price": 0, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
-                                                      "$lt": ts2utcdatetime(
-                                                          star_timeStamp_new + 86400)}}).count()
+            {"source": 2, "status": {"$gte": 100}, "depth_price": 0,
+             "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
+                       "$lt": ts2utcdatetime(
+                           star_timeStamp_new + 86400)}}).count()
+        # 网络客免费订单量
         needs_mianfei1 = mdb.xm_hair_need.find(
-            {"source": 2, "depth_price": {"$exists": False}, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
-                                                                       "$lt": ts2utcdatetime(
-                                                                           star_timeStamp_new + 86400)}}).count()
+            {"source": 2, "status": {"$gte": 100}, "depth_price": {"$exists": False},
+             "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
+                       "$lt": ts2utcdatetime(
+                           star_timeStamp_new + 86400)}}).count()
         # 网络客方案被查看量
         needs_chakan = mdb.xm_hair_need.find(
-            {"source": 2, "is_check": 1, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
-                                                   "$lt": ts2utcdatetime(
-                                                       star_timeStamp_new + 86400)}}).count()
+            {"source": 2, "status": {"$gte": 100}, "is_check": 1, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
+                                                                            "$lt": ts2utcdatetime(
+                                                                                star_timeStamp_new + 86400)}}).count()
         # 网络客超时订单量
         needs_chaoshi = mdb.xm_hair_need.find(
             {"source": 2, "status": 104, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
@@ -177,4 +183,58 @@ def get_hair_need_nums(day_time, n):
     w.save("/Users/sunyihuan/Desktop/need_data—_{}.xls".format(day_time))
 
 
-get_hair_need_nums("2018-11-07", 30)
+# get_hair_need_nums("2018-11-10", 30)
+
+
+def days_one_week_stylists_info(day_time):
+    '''
+    近7天完成订单发型师名单
+    :param day_time: 开始时间，格式为："2018-11-07"，str类型
+    :return:
+    '''
+    w = xlwt.Workbook()
+    start_time = day_time + " 00:00:00"
+    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+    star_timeStamp = int(time.mktime(start_timeArray))
+    for i in range(7):
+        star_timeStamp_new = i * 86400 + star_timeStamp
+        needs_finish = mdb.xm_hair_scheme.find({"is_finish": 1, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),
+                                                                          "$lt": ts2utcdatetime(
+                                                                              star_timeStamp_new + 86400)}})
+        wangluo_stylist = []
+        for n_f in needs_finish:
+            need_id = id2ObjectId(n_f["need_id"])
+            needs_p = mdb.xm_hair_need.find({"_id": need_id})
+            for n in needs_p:
+                if n["source"] == 2:
+                    if n["myid"] not in wangluo_stylist:
+                        wangluo_stylist.append(n["myid"])
+
+        timeArray = time.localtime(star_timeStamp_new)
+        otherStyleTime = time.strftime("%Y--%m--%d %H:%M:%S", timeArray)
+        otherStyleTime = otherStyleTime.split(" ")[0]
+        sheet_name = otherStyleTime.split("--")[0] + otherStyleTime.split("--")[1] + otherStyleTime.split("--")[2]
+        sh = w.add_sheet("stylist_{}".format(sheet_name))
+        sh.write(0, 0, "姓名")
+        sh.write(0, 1, "手机号码")
+        sh.write(0, 2, "剪发价格")
+        sh.write(0, 3, "发廊地址")
+
+        for i, k in enumerate(wangluo_stylist):
+            try:
+                s_p = mdb.person.find({"uid": k})
+                s_w = mdb.wxuser.find({'_id': k})
+                for s_ in s_w:
+                    if s_["mobile"]!="":
+                        sh.write(i + 1, 1, s_["mobile"])
+                for s__ in s_p:
+                    if s__["user_name"] != "":
+                        sh.write(i + 1, 0, s__["user_name"])
+                        sh.write(i + 1, 2, s__["cut_price"])
+                        sh.write(i + 1, 3, s__["salon_position"])
+            except:
+                print(k)
+    w.save("/Users/sunyihuan/Desktop/已完成网络设计订单发型师名单（近7天）.xls")
+
+
+days_one_week_stylists_info("2018-12-03")
