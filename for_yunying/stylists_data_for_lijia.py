@@ -85,12 +85,9 @@ def get_finished_stylist_list():
         sh_wangluo.write(i + 1, 4, my_nums)
         try:
             s_p = mdb.person.find({"uid": my_id})
-            s_w = mdb.wxuser.find({'_id': my_id})
-            for s_ in s_w:
-                if s_["mobile"] != "":
-                    sh_wangluo.write(i + 1, 1, s_["mobile"])
             for s__ in s_p:
                 if s__["user_name"] != "":
+                    sh_wangluo.write(i + 1, 1, s__["mobile"])
                     sh_wangluo.write(i + 1, 0, s__["user_name"])
                     sh_wangluo.write(i + 1, 2, s__["cut_price"])
                     sh_wangluo.write(i + 1, 3, s__["salon_position"])
@@ -108,13 +105,10 @@ def get_finished_stylist_list():
         sh_xianchang.write(i_ + 1, 4, my_nums_)
         try:
             s_p = mdb.person.find({"uid": my_id__})
-            s_w = mdb.wxuser.find({'_id': my_id__})
-            for s_ in s_w:
-                if s_["mobile"] != "":
-                    sh_xianchang.write(i_ + 1, 1, s_["mobile"])
             for s__ in s_p:
                 if s__["user_name"] != "":
                     sh_xianchang.write(i_ + 1, 0, s__["user_name"])
+                    sh_xianchang.write(i_ + 1, 1, s__["mobile"])
                     sh_xianchang.write(i_ + 1, 2, s__["cut_price"])
                     sh_xianchang.write(i_ + 1, 3, s__["salon_position"])
         except:

@@ -223,13 +223,11 @@ def days_one_week_stylists_info(day_time):
         for i, k in enumerate(wangluo_stylist):
             try:
                 s_p = mdb.person.find({"uid": k})
-                s_w = mdb.wxuser.find({'_id': k})
-                for s_ in s_w:
-                    if s_["mobile"]!="":
-                        sh.write(i + 1, 1, s_["mobile"])
+
                 for s__ in s_p:
                     if s__["user_name"] != "":
                         sh.write(i + 1, 0, s__["user_name"])
+                        sh.write(i + 1, 1, s__["mobile"])
                         sh.write(i + 1, 2, s__["cut_price"])
                         sh.write(i + 1, 3, s__["salon_position"])
             except:
