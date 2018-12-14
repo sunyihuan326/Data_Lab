@@ -268,6 +268,29 @@ def get_wangluosheji_stylists(day_time):
     return wangluo_stylist
 
 
+def get_xianchang_sheji_stylists(day_time):
+    '''
+    获取某段时间内，完成网络设计订单的发型师名单
+    :param day_time:
+    :return:
+    '''
+    start_time = day_time + " 00:00:00"
+    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+    star_timeStamp = int(time.mktime(start_timeArray))
+    needs_finish = mdb.xm_hair_scheme.find({"is_finish": 1, "ctime": {"$gte": ts2utcdatetime(star_timeStamp),
+                                                                      "$lt": ts2utcdatetime(
+                                                                          star_timeStamp + 30 * 86400)}})
+    wangluo_stylist = []
+    for n_f in needs_finish:
+        need_id = id2ObjectId(n_f["need_id"])
+        needs_p = mdb.xm_hair_need.find({"_id": need_id})
+        for n in needs_p:
+            if n["source"] == 1:
+                if n["myid"] not in wangluo_stylist:
+                    wangluo_stylist.append(n["myid"])
+    return wangluo_stylist
+
+
 def wangluosheji_work_years_distribution(day_time):
     '''
     完成网络设计订单的发型师工作年限分布
@@ -289,13 +312,13 @@ def wangluosheji_work_years_distribution(day_time):
     return work_years_count
 
 
-def wangluo_cut_price_distributiom(day_time):
+def cut_price_distributiom(day_time):
     '''
-    完成网络设计订单的发型师剪发价格区间
+    完成网络设计/网络设计订单的发型师剪发价格区间
     :param day_time:
     :return:
     '''
-    wangluo_stylist = get_wangluosheji_stylists(day_time)
+    wangluo_stylist = get_xianchang_sheji_stylists(day_time)
     print("get_wangluo_stylist")
     cut_price_count = {}
     cut_price_count["1-38"] = 0
@@ -371,13 +394,12 @@ def get_wangluosheji_cut_work_distribution(day_time):
 
 
 if __name__ == "__main__":
-    day_time = "2018-11-11"
+    day_time = "2018-11-14"
     # work_years_count = wangluosheji_work_years_distribution(day_time)
     # print(work_years_count)
     # print(work_years_numbers(work_years_count))
     #
     # cut_price_count = wangluo_cut_price_distributiom(day_time)
     # print(cut_price_count)
-    work_years_count, cut_price_count = get_wangluosheji_cut_work_distribution(day_time)
+    cut_price_count = cut_price_distributiom(day_time)
     print(cut_price_count)
-    print(work_years_numbers(work_years_count))

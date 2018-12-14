@@ -57,7 +57,7 @@ def get_day_uv(index, gt_time, lt_time):
 def seven_day_stylist():
     index_release = 'user_behavior_log_prod_20180723'  # 线上index
     stylists = []
-    for k in range(1):
+    for k in range(7):
         gt_time = k * 86400 + 1544112000
         lt_time = (k + 1) * 86400 + 1544112000
 
