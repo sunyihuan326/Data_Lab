@@ -28,8 +28,8 @@ def get_day_uv(index, gt_time, lt_time):
                     {
                         "range": {
                             "action_timestamp": {
-                                "gt": gt_time,  # >1541779200
-                                "lt": lt_time  # <=1544371200
+                                "gt": gt_time,  # >gt_time
+                                "lt": lt_time  # <lt_time
                             }
                         }
                     },
@@ -57,7 +57,7 @@ def get_day_uv(index, gt_time, lt_time):
 def seven_day_stylist():
     index_release = 'user_behavior_log_prod_20180723'  # 线上index
     stylists = []
-    for k in range(7):
+    for k in range(1):
         gt_time = k * 86400 + 1544112000
         lt_time = (k + 1) * 86400 + 1544112000
 
@@ -118,7 +118,7 @@ def stylist_ctime_distibution():
                 else:
                     g_year += 1
         except:
-            print("error:::::::::::::::")
+            print("error:::::::::::::::{}******".format(stylist))
 
     return g_year, twelve_month_nums, six_month_nums, one_month_nums
 
