@@ -1,5 +1,6 @@
 # coding:utf-8 
 '''
+最近7天uv，注册的时间（发型师b）
 created on 2018/12/14
 
 @author:sunyihuan
@@ -123,12 +124,14 @@ def stylist_ctime_distibution():
     return g_year, twelve_month_nums, six_month_nums, one_month_nums
 
 
-g_year, twelve_month_nums, six_month_nums, one_month_nums = stylist_ctime_distibution()
-
-all_nums = g_year + twelve_month_nums + six_month_nums + one_month_nums
-print("近7天总uv数：", all_nums)
-
-print("一年前注册：{:.2%}".format(g_year / all_nums))
-print("6个月至一年前注册：{:.2%}".format(twelve_month_nums / all_nums))
-print("1-6个月前注册：{:.2%}".format(six_month_nums / all_nums))
-print("最近1个月注册：{:.2%}".format(one_month_nums / all_nums))
+if __name__ == "__main__":
+    print(1)
+    # g_year, twelve_month_nums, six_month_nums, one_month_nums = stylist_ctime_distibution()
+    #
+    # all_nums = g_year + twelve_month_nums + six_month_nums + one_month_nums
+    # print("近7天总uv数：", all_nums)
+    #
+    # print("一年前注册：{:.2%}".format(g_year / all_nums))
+    # print("6个月至一年前注册：{:.2%}".format(twelve_month_nums / all_nums))
+    # print("1-6个月前注册：{:.2%}".format(six_month_nums / all_nums))
+    # print("最近1个月注册：{:.2%}".format(one_month_nums / all_nums))
