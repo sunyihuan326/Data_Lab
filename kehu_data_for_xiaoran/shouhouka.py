@@ -138,3 +138,12 @@ def get_vip_stylist_list():
             sh.write(i + 1, 2, s_mobile)
 
     w.save("/Users/sunyihuan/Desktop/使用售后卡发型师.xls")
+
+
+if __name__ == "__main__":
+    stylists = seven_day_stylist()
+    card_nums = mdb.customer_card_after.find({"status": 101}).count()
+    card_get_nums = mdb.customer_card_after.find({"status": 101, "is_get": 1}).count()
+    print("使用售后服务卡功能人数：", len(stylists))
+    print("生成售后服务卡总数：", card_nums)
+    print("售后服务卡被领取总数：", card_get_nums)
