@@ -7,6 +7,7 @@ created on 2018/12/17
 
 import sys
 import json
+import datetime
 import xlwt
 from elasticsearch import Elasticsearch
 
@@ -15,6 +16,15 @@ es = Elasticsearch(
     # http_auth=('elastic', 'passwd'),
     port=39200
 )
+
+
+def ts2utcdatetime(ts):
+    '''
+    时间戳转化为日期，支持mongodb中的日期保存
+    :param ts:
+    :return:
+    '''
+    return datetime.datetime.utcfromtimestamp(ts)
 
 
 def get_day_uv(index):
@@ -26,14 +36,14 @@ def get_day_uv(index):
         "query": {
             "bool": {
                 "must": [
-                    # {
-                    #     "range": {
-                    #         "action_timestamp": {
-                    #             "gt": gt_time,  # >gt_time
-                    #             "lt": lt_time  # <lt_time
-                    #         }
-                    #     }
-                    # },
+                    {
+                        "range": {
+                            "action_timestamp": {
+                                "gt": 1545062400,  # >gt_time
+                                "lt": 1545148800  # <lt_time
+                            }
+                        }
+                    },
                     {
                         "term": {
                             "business_line": "meiyezhushou"
@@ -142,8 +152,11 @@ def get_vip_stylist_list():
 
 if __name__ == "__main__":
     stylists = seven_day_stylist()
-    card_nums = mdb.customer_card_after.find({"status": 101}).count()
-    card_get_nums = mdb.customer_card_after.find({"status": 101, "is_get": 1}).count()
+    card_nums = mdb.customer_card_after.find(
+        {"status": 101, "ctime": {"$gt": ts2utcdatetime(1545062400), "$lt": ts2utcdatetime(1545148800)}}).count()
+    card_get_nums = mdb.customer_card_after.find({"status": 101, "is_get": 1,
+                                                  "ctime": {"$gt": ts2utcdatetime(1545062400),
+                                                            "$lt": ts2utcdatetime(1545148800)}}).count()
     print("使用售后服务卡功能人数：", len(stylists))
     print("生成售后服务卡总数：", card_nums)
     print("售后服务卡被领取总数：", card_get_nums)
