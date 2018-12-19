@@ -150,13 +150,44 @@ def get_vip_stylist_list():
     w.save("/Users/sunyihuan/Desktop/使用售后卡发型师.xls")
 
 
+def three_days_using_card(day_time_start):
+    '''
+    连续3天都创建售后服务卡的发型师
+    :param day_time_start:时间戳
+    :return:
+    '''
+    stylist_one = mdb.customer_card_after.distinct("myid",
+                                                   {"ctime": {"$gt": ts2utcdatetime(day_time_start + 0 * 86400),
+                                                              "$lt": ts2utcdatetime(day_time_start + 86400)},
+                                                    "status": 101})
+
+    stylist_two = mdb.customer_card_after.distinct("myid",
+                                                   {"ctime": {"$gt": ts2utcdatetime(day_time_start + 86400),
+                                                              "$lt": ts2utcdatetime(day_time_start + 2 * 86400)},
+                                                    "status": 101})
+    stylist_three = mdb.customer_card_after.distinct("myid",
+                                                     {"ctime": {"$gt": ts2utcdatetime(day_time_start + 2 * 86400),
+                                                                "$lt": ts2utcdatetime(day_time_start + 3 * 86400)},
+                                                      "status": 101})
+    three_days_using_uv = set(stylist_one) & set(stylist_two) & set(stylist_three)
+    two_stylist = (set(stylist_one) & set(stylist_two)) | (set(stylist_two) & set(stylist_three))
+    return stylist_one, stylist_two, stylist_three, three_days_using_uv, two_stylist
+
+
 if __name__ == "__main__":
-    stylists = seven_day_stylist()
-    card_nums = mdb.customer_card_after.find(
-        {"status": 101, "ctime": {"$gt": ts2utcdatetime(1545062400), "$lt": ts2utcdatetime(1545148800)}}).count()
-    card_get_nums = mdb.customer_card_after.find({"status": 101, "is_get": 1,
-                                                  "ctime": {"$gt": ts2utcdatetime(1545062400),
-                                                            "$lt": ts2utcdatetime(1545148800)}}).count()
-    print("使用售后服务卡功能人数：", len(stylists))
-    print("生成售后服务卡总数：", card_nums)
-    print("售后服务卡被领取总数：", card_get_nums)
+    # stylists = seven_day_stylist()
+    # card_nums = mdb.customer_card_after.find(
+    #     {"status": 101, "ctime": {"$gt": ts2utcdatetime(1545062400), "$lt": ts2utcdatetime(1545148800)}}).count()
+    # card_get_nums = mdb.customer_card_after.find({"status": 101, "is_get": 1,
+    #                                               "ctime": {"$gt": ts2utcdatetime(1545062400),
+    #                                                         "$lt": ts2utcdatetime(1545148800)}}).count()
+    # print("使用售后服务卡功能人数：", len(stylists))
+    # print("生成售后服务卡总数：", card_nums)
+    # print("售后服务卡被领取总数：", card_get_nums)
+    stylist_one, stylist_two, stylist_three, three_days_using_uv, two_stylist = three_days_using_card(1544976000)
+    # print("第一天使用人数", len(stylist_one))
+    # print("第二天使用人数", len(stylist_two))
+    # print("第三天使用人数", len(stylist_three))
+    # print("连续两天都使用的人数", len(two_stylist))
+    # print("三天都使用的人数", len(three_days_using_uv))
+    print(two_stylist)
