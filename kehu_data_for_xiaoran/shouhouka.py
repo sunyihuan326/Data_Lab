@@ -9,6 +9,7 @@ import sys
 import json
 import datetime
 import xlwt
+import time
 from elasticsearch import Elasticsearch
 
 es = Elasticsearch(
@@ -184,10 +185,15 @@ if __name__ == "__main__":
     # print("使用售后服务卡功能人数：", len(stylists))
     # print("生成售后服务卡总数：", card_nums)
     # print("售后服务卡被领取总数：", card_get_nums)
-    stylist_one, stylist_two, stylist_three, three_days_using_uv, two_stylist = three_days_using_card(1544976000)
-    # print("第一天使用人数", len(stylist_one))
-    # print("第二天使用人数", len(stylist_two))
-    # print("第三天使用人数", len(stylist_three))
-    # print("连续两天都使用的人数", len(two_stylist))
-    # print("三天都使用的人数", len(three_days_using_uv))
-    print(two_stylist)
+    day_time_start = "2018-12-19"
+    start_time = day_time_start + " 00:00:00"
+    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
+    star_timeStamp = int(time.mktime(start_timeArray))
+
+    stylist_one, stylist_two, stylist_three, three_days_using_uv, two_stylist = three_days_using_card(star_timeStamp)
+    print("第一天使用人数", len(stylist_one))
+    print("第二天使用人数", len(stylist_two))
+    print("第三天使用人数", len(stylist_three))
+    print("连续两天都使用的人数", len(two_stylist))
+    print("三天都使用的人数", len(three_days_using_uv))
+    # print(two_stylist)
