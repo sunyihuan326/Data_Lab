@@ -30,18 +30,18 @@ def get_n_range(stylists):
     return n_r
 
 
-def get_finished_stylist_list():
+def get_finished_stylist_list(day_time):
     '''
     自2018-11-11开始
     近30天完成订单用户中，完成订单次数前100排名（名字/电话/剪发价位/地址）
     近30天完成订单用户中，完成订单次数前100排名（名字/电话/剪发价位/地址）
-    :return:
+    :return:day_time：开始日期，格式 "2018-11-11"
     '''
     w = xlwt.Workbook()
     sh_wangluo = w.add_sheet("网络设计")
     sh_xianchang = w.add_sheet("现场设计")
 
-    day_time = "2018-11-11"
+    # day_time = "2018-11-11"
     start_time = day_time + " 00:00:00"
     start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
     star_timeStamp = int(time.mktime(start_timeArray))
@@ -113,9 +113,10 @@ def get_finished_stylist_list():
                     sh_xianchang.write(i_ + 1, 3, s__["salon_position"])
         except:
             print(my_id__)
-    w.save("/Users/sunyihuan/Desktop/近30天完成订单发型师名单（前100）.xls")
+    w.save("/Users/sunyihuan/Desktop/{}近30天完成订单发型师名单（前100）.xls".format(day_time))
 
 
 if __name__ == "__main__":
     # get_finished_stylist_list()
-    print(1)
+    day_time = "2018-11-26"
+    get_finished_stylist_list(day_time)
