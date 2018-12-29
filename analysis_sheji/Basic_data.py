@@ -58,7 +58,7 @@ def basic_data(start_time="2018-12-5", end_time="2019-01-01"):
 
 
 if __name__ == "__main__":
-    start_time = "2018-12-5"
+    start_time = "2018-12-28"
     end_time = "2019-1-5"
     mobile_nums, buy_vip_nums, vip_nums, one_month_expire = basic_data(start_time, end_time)
     print("已存入手机号码人数： ", mobile_nums)
