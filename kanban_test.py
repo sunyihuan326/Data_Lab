@@ -83,6 +83,16 @@ def ts2utcdatetime(ts):
     return datetime.datetime.utcfromtimestamp(ts)
 
 
+def change_type(s_data):
+    '''
+    转换数据类型，输出为list
+    :param s_data:
+    :return:
+    '''
+    s_data = list(map(int, s_data))
+    return s_data
+
+
 def changjing_data(day_time_start):
     '''
     返回某一日数据看板中的数据
@@ -106,27 +116,39 @@ def changjing_data(day_time_start):
     star_timeStamp = int(time.mktime(start_timeArray))
 
     vip_st = mdb.wxuser.distinct("_id", {"expireat": {"$gt": star_timeStamp}})  # vip列表
-    vip_st = list(map(str, vip_st))
+    vip_st = change_type(vip_st)
 
     poster_st = mdb.log_poster.distinct("uid",
                                         {"ctime": {"$gt": star_timeStamp, "$lt": star_timeStamp + 86400}})  # 使用海报发型师uv
+
+    fxcl_st = mdb.log_material.distinct("uid",
+                                        {"ctime": {"$gt": star_timeStamp, "$lt": star_timeStamp + 86400}})  # 使用海报发型师uv
+
+    poster_st = set(poster_st) | set(fxcl_st)
+    poster_st = change_type(poster_st)
 
     stylist_one = mdb.xm_hair_scheme.distinct("myid",
                                               {"utime": {"$gte": ts2utcdatetime(star_timeStamp + 0 * 86400),
                                                          "$lt": ts2utcdatetime(star_timeStamp + 86400)},
                                                "is_finish": 1})  # 完成订单发型师
+    stylist_one = change_type(stylist_one)
     stylist_t = mdb.xm_good_hair.distinct("myid",
                                           {"utime": {"$gte": ts2utcdatetime(star_timeStamp + 0 * 86400),
                                                      "$lt": ts2utcdatetime(star_timeStamp + 86400)},
                                            "status": 1})  # 收藏发型的发型师
+    stylist_t = change_type(stylist_t)
 
     sheji_st = set(stylist_one) | set(stylist_t)  # 设计沟通场景发型师日活
+    sheji_st = change_type(sheji_st)
+
     sheji_st_vip = (set(stylist_one) | set(stylist_t)) & set(vip_st)  # 设计沟通场景发型师VIP日活
 
     poster_st_vip = set(vip_st) & set(poster_st)  # 使用海报发型师中VIP的人数
 
     stylists = seven_day_stylist(star_timeStamp, star_timeStamp + 86400)  # 美业助手app当日uv
+
     stylists_yestday = seven_day_stylist(star_timeStamp - 86400, star_timeStamp)  # 美业助手app昨日uv
+    vip_st = list(map(str, vip_st))
 
     stylists_yes = set(stylists) & set(stylists_yestday)  # 次日留存人数
 
@@ -136,7 +158,7 @@ def changjing_data(day_time_start):
 
 
 if __name__ == "__main__":
-    day_time_start = "2018-12-21"
+    day_time_start = "2019-1-2"
     sheji_st, sheji_st_vip, poster_st, poster_st_vip, stylists, stylists_yes, stylists_vip = changjing_data(
         day_time_start)
 
