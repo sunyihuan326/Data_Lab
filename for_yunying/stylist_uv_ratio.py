@@ -9,12 +9,9 @@ import sys
 import json
 from elasticsearch import Elasticsearch
 from tqdm import tqdm
+from utils import connect_mongodb_sheji, connect_es, ts2utcdatetime, day2timestamp
 
-es = Elasticsearch(
-    ['http://baolei.shuwtech.com'],
-    # http_auth=('elastic', 'passwd'),
-    port=39200
-)
+es = connect_es()
 
 
 def get_day_uv(index, gt_time, lt_time):
@@ -76,14 +73,7 @@ def seven_day_stylist():
     return stylists
 
 
-# stylists = seven_day_stylist()
-
-from pymongo import MongoClient
-
-mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
-                   unicode_decode_error_handler='ignore')  # 链接mongodb
-mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
-mdb = mdbs['sheji']  # 链接sheji
+mdb = connect_mongodb_sheji()  # 链接sheji
 
 
 def get_stylist_ctime(uid):

@@ -5,27 +5,11 @@ created on 2018/12/17
 @author:sunyihuan
 '''
 
-import sys
-import json
-import datetime
 import xlwt
 import time
-from elasticsearch import Elasticsearch
+from utils import connect_mongodb_sheji, connect_es, ts2utcdatetime, day2timestamp
 
-es = Elasticsearch(
-    ['http://baolei.shuwtech.com'],
-    # http_auth=('elastic', 'passwd'),
-    port=39200
-)
-
-
-def ts2utcdatetime(ts):
-    '''
-    时间戳转化为日期，支持mongodb中的日期保存
-    :param ts:
-    :return:
-    '''
-    return datetime.datetime.utcfromtimestamp(ts)
+es = connect_es()
 
 
 def get_day_uv(index):
@@ -90,15 +74,7 @@ def seven_day_stylist():
     return stylists
 
 
-# stylists = seven_day_stylist()
-
-
-from pymongo import MongoClient
-
-mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
-                   unicode_decode_error_handler='ignore')  # 链接mongodb
-mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
-mdb = mdbs['sheji']  # 链接sheji
+mdb = connect_mongodb_sheji()  # 链接sheji
 
 
 def get_stylist_phone_vip(uid):
@@ -133,7 +109,6 @@ def get_vip_stylist_list():
     '''
     stylists = seven_day_stylist()
 
-    print("使用售后卡人数：", len(stylists))
     w = xlwt.Workbook()
     sh = w.add_sheet("发型师信息")
     sh.write(0, 0, "姓名")
@@ -186,9 +161,8 @@ if __name__ == "__main__":
     # print("生成售后服务卡总数：", card_nums)
     # print("售后服务卡被领取总数：", card_get_nums)
     day_time_start = "2018-12-19"
-    start_time = day_time_start + " 00:00:00"
-    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
-    star_timeStamp = int(time.mktime(start_timeArray))
+
+    star_timeStamp = day2timestamp(day_time_start)
 
     stylist_one, stylist_two, stylist_three, three_days_using_uv, two_stylist = three_days_using_card(star_timeStamp)
     print("第一天使用人数", len(stylist_one))

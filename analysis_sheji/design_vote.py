@@ -4,15 +4,12 @@ created on 2018/11/29
 
 @author:sunyihuan
 '''
-from pymongo import MongoClient
-import time
-from bson.objectid import ObjectId
-import xlwt
 
-mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
-                   unicode_decode_error_handler='ignore')  # 链接mongodb
-mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
-mdb = mdbs['sheji']  # 链接sheji
+from utils import connect_mongodb_sheji, connect_es, ts2utcdatetime, day2timestamp
+import xlwt
+import time
+
+mdb = connect_mongodb_sheji()  # 链接sheji
 
 vote = mdb.design_game_vote.find({"myid": 140296, "ctime": {"$gte": 1543420800}})
 w = xlwt.Workbook()

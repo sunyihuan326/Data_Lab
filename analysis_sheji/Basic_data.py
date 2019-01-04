@@ -4,14 +4,11 @@ created on 2018/12/5
 
 @author:sunyihuan
 '''
-from pymongo import MongoClient
-import time
-from bson.objectid import ObjectId
 
-mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
-                   unicode_decode_error_handler='ignore')  # 链接mongodb
-mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
-mdb = mdbs['sheji']  # 链接sheji
+import time
+from utils import ts2utcdatetime, connect_mongodb_sheji, connect_es, day2timestamp
+
+mdb = connect_mongodb_sheji()  # 链接sheji
 
 
 def twice_buy_vip():
@@ -42,13 +39,8 @@ def basic_data(start_time="2018-12-5", end_time="2019-01-01"):
     :param time_time:
     :return:
     '''
-    start_time = start_time + " 00:00:00"
-    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
-    star_timeStamp = int(time.mktime(start_timeArray))
-
-    end_time = end_time + " 23:59:59"
-    end_timeArray = time.strptime(end_time, "%Y-%m-%d %H:%M:%S")
-    end_timeStamp = int(time.mktime(end_timeArray))
+    star_timeStamp = day2timestamp(start_time)
+    end_timeStamp = day2timestamp(end_time)
 
     vip_nums = mdb.wxuser.find({"expireat": {"$gte": star_timeStamp}}).count()
     mobile_nums = mdb.wxuser.find({"mobile": {"$gte": "1"}}).count()

@@ -5,16 +5,10 @@ created on 2018/12/11
 @author:sunyihuan
 '''
 
-from pymongo import MongoClient
-import datetime
-import time
 import xlwt
-from for_yunying.hair_need_data import ts2utcdatetime, id2ObjectId
+from utils import ts2utcdatetime, connect_mongodb_sheji, connect_es, day2timestamp, id2ObjectId, list_change_type
 
-mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
-                   unicode_decode_error_handler='ignore')  # 链接mongodb
-mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
-mdb = mdbs['sheji']  # 链接sheji
+mdb = connect_mongodb_sheji()  # 链接sheji
 
 
 def dict_sorted(d):
@@ -41,10 +35,7 @@ def get_finished_stylist_list(day_time):
     sh_wangluo = w.add_sheet("网络设计")
     sh_xianchang = w.add_sheet("现场设计")
 
-    # day_time = "2018-11-11"
-    start_time = day_time + " 00:00:00"
-    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
-    star_timeStamp = int(time.mktime(start_timeArray))
+    star_timeStamp = day2timestamp(day_time)
     needs_finish = mdb.xm_hair_scheme.find({"is_finish": 1, "ctime": {"$gte": ts2utcdatetime(star_timeStamp),
                                                                       "$lt": ts2utcdatetime(
                                                                           star_timeStamp + 30 * 86400)}})

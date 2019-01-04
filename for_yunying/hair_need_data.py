@@ -11,35 +11,9 @@ import datetime
 import time
 from bson.objectid import ObjectId
 import xlwt
-import xlrd
-import tqdm
+from utils import connect_mongodb_sheji, connect_es, day2timestamp, id2ObjectId, ts2utcdatetime, list_change_type
 
-
-def id2ObjectId(_id):
-    if not _id:
-        return _id
-
-    if isinstance(_id, ObjectId):
-        return _id
-    if str(_id).isdigit():
-        return int(_id)
-    else:
-        return ObjectId(_id)
-
-
-mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
-                   unicode_decode_error_handler='ignore')  # 链接mongodb
-mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
-mdb = mdbs['sheji']  # 链接sheji
-
-
-def ts2utcdatetime(ts):
-    '''
-    时间戳转化为日期，支持mongodb中的日期保存
-    :param ts:
-    :return:
-    '''
-    return datetime.datetime.utcfromtimestamp(ts)
+mdb = connect_mongodb_sheji()  # 链接sheji
 
 
 def b_schemes(start_time):
@@ -96,9 +70,7 @@ def get_hair_need_nums(day_time, n):
     :param n:要查询的天数，格式为：30，int类型
     :return:
     '''
-    start_time = day_time + " 00:00:00"
-    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
-    star_timeStamp = int(time.mktime(start_timeArray))
+    star_timeStamp = day2timestamp(day_time)
 
     sh.write(0, 0, "日期")
     sh.write(0, 1, "网络设计总数(已经成功提交)")
@@ -193,9 +165,7 @@ def days_one_week_stylists_info(day_time):
     :return:
     '''
     w = xlwt.Workbook()
-    start_time = day_time + " 00:00:00"
-    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
-    star_timeStamp = int(time.mktime(start_timeArray))
+    star_timeStamp = day2timestamp(day_time)
     for i in range(7):
         star_timeStamp_new = i * 86400 + star_timeStamp
         needs_finish = mdb.xm_hair_scheme.find({"is_finish": 1, "ctime": {"$gte": ts2utcdatetime(star_timeStamp_new),

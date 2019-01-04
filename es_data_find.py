@@ -6,13 +6,9 @@ created on 2018/12/11
 '''
 import sys
 import json
-from elasticsearch import Elasticsearch
+from utils import connect_mongodb_sheji, connect_es
 
-es = Elasticsearch(
-    ['http://baolei.shuwtech.com'],
-    # http_auth=('elastic', 'passwd'),
-    port=39200
-)
+es = connect_es()
 
 
 def distinct_es_search(index, business_version="", button_index="", current_page=""):

@@ -5,16 +5,9 @@ created on 2018/12/12
 @author:sunyihuan
 '''
 
-from pymongo import MongoClient
-import datetime
-import time
-from elasticsearch import Elasticsearch
+from utils import connect_es, connect_mongodb_sheji, ts2utcdatetime, day2timestamp, list_change_type
 
-es = Elasticsearch(
-    ['http://baolei.shuwtech.com'],
-    # http_auth=('elastic', 'passwd'),
-    port=39200
-)
+es = connect_es()
 
 
 def get_day_uv(index, gt_time, lt_time):
@@ -74,26 +67,7 @@ def seven_day_stylist(gt_time, lt_time):
     return stylists
 
 
-def ts2utcdatetime(ts):
-    '''
-    时间戳转化为日期，支持mongodb中的日期保存
-    :param ts:
-    :return:
-    '''
-    return datetime.datetime.utcfromtimestamp(ts)
-
-
-def change_type(s_data):
-    '''
-    转换数据类型，输出为list
-    :param s_data:
-    :return:
-    '''
-    s_data = list(map(int, s_data))
-    return s_data
-
-
-def changjing_data(day_time_start):
+def changJing_data(day_time_start):
     '''
     返回某一日数据看板中的数据
     :param day_time_start: 日期，格式为："2018-12-21"
@@ -106,17 +80,11 @@ def changjing_data(day_time_start):
     stylists_yes：美助app昨日留存, 
     stylists_vip：美助app中VIP日活
     '''
-    mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
-                       unicode_decode_error_handler='ignore')  # 链接mongodb
-    mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
-    mdb = mdbs['sheji']  # 链接sheji
-
-    start_time = day_time_start + " 00:00:00"
-    start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
-    star_timeStamp = int(time.mktime(start_timeArray))
+    mdb = connect_mongodb_sheji()  # 链接sheji
+    star_timeStamp = day2timestamp(day_time_start)
 
     vip_st = mdb.wxuser.distinct("_id", {"expireat": {"$gt": star_timeStamp}})  # vip列表
-    vip_st = change_type(vip_st)
+    vip_st = list_change_type(int, vip_st)
 
     poster_st = mdb.log_poster.distinct("uid",
                                         {"ctime": {"$gt": star_timeStamp, "$lt": star_timeStamp + 86400}})  # 使用海报发型师uv
@@ -125,21 +93,21 @@ def changjing_data(day_time_start):
                                         {"ctime": {"$gt": star_timeStamp, "$lt": star_timeStamp + 86400}})  # 使用海报发型师uv
 
     poster_st = set(poster_st) | set(fxcl_st)
-    poster_st = change_type(poster_st)
+    poster_st = list_change_type(int, poster_st)
 
     stylist_one = mdb.xm_hair_scheme.distinct("myid",
                                               {"utime": {"$gte": ts2utcdatetime(star_timeStamp + 0 * 86400),
                                                          "$lt": ts2utcdatetime(star_timeStamp + 86400)},
                                                "is_finish": 1})  # 完成订单发型师
-    stylist_one = change_type(stylist_one)
+    stylist_one = list_change_type(int, stylist_one)
     stylist_t = mdb.xm_good_hair.distinct("myid",
                                           {"utime": {"$gte": ts2utcdatetime(star_timeStamp + 0 * 86400),
                                                      "$lt": ts2utcdatetime(star_timeStamp + 86400)},
                                            "status": 1})  # 收藏发型的发型师
-    stylist_t = change_type(stylist_t)
+    stylist_t = list_change_type(int, stylist_t)
 
     sheji_st = set(stylist_one) | set(stylist_t)  # 设计沟通场景发型师日活
-    sheji_st = change_type(sheji_st)
+    sheji_st = list_change_type(int, sheji_st)
 
     sheji_st_vip = (set(stylist_one) | set(stylist_t)) & set(vip_st)  # 设计沟通场景发型师VIP日活
 
@@ -148,7 +116,7 @@ def changjing_data(day_time_start):
     stylists = seven_day_stylist(star_timeStamp, star_timeStamp + 86400)  # 美业助手app当日uv
 
     stylists_yestday = seven_day_stylist(star_timeStamp - 86400, star_timeStamp)  # 美业助手app昨日uv
-    vip_st = list(map(str, vip_st))
+    vip_st = list_change_type(str, vip_st)
 
     stylists_yes = set(stylists) & set(stylists_yestday)  # 次日留存人数
 
@@ -159,7 +127,7 @@ def changjing_data(day_time_start):
 
 if __name__ == "__main__":
     day_time_start = "2019-1-2"
-    sheji_st, sheji_st_vip, poster_st, poster_st_vip, stylists, stylists_yes, stylists_vip = changjing_data(
+    sheji_st, sheji_st_vip, poster_st, poster_st_vip, stylists, stylists_yes, stylists_vip = changJing_data(
         day_time_start)
 
     print("设计沟通人数", len(sheji_st))

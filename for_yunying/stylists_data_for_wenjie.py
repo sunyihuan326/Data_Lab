@@ -8,11 +8,9 @@ created on 2018/12/11
 from pymongo import MongoClient
 import datetime
 import time
+from utils import ts2utcdatetime, day2timestamp, list_change_type, connect_es, connect_mongodb_sheji
 
-mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
-                   unicode_decode_error_handler='ignore')  # 链接mongodb
-mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
-mdb = mdbs['sheji']  # 链接sheji
+mdb = connect_mongodb_sheji()  # 链接sheji
 
 stylists_kehus = len(mdb.xm_relation.distinct("myid"))
 kehus = mdb.xm_relation.find().count()
