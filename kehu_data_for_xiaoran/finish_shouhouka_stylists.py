@@ -53,6 +53,7 @@ def get_vip_stylist_list():
     '''
     day_time_start = "2019-1-2"
     star_timeStamp = day2timestamp(day_time_start)
+    print(star_timeStamp)
 
     stylists = get_stylists(star_timeStamp)
 

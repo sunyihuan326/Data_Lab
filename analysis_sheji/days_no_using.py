@@ -72,13 +72,14 @@ def get_days_uv_list(end_time, day_nums, index):
 
 def day_nums_no_using(days_nums):
     index_release = 'user_behavior_log_prod_20180723'
-    end_time = "2019-1-4"
+    end_time = "2019-1-5"
     end_time = day2timestamp(end_time)
     uv_list = get_days_uv_list(end_time, days_nums, index_release)
 
-    vip_list = get_vip_list(end_time - days_nums * 86400)
+    vip_list = get_vip_list(end_time)
 
     vip_list = list_change_type(str, vip_list)
+    print("vip总人数",len(vip_list))
     no_using_list = set(vip_list) - set(uv_list)
     return no_using_list
 
@@ -87,5 +88,7 @@ if __name__ == "__main__":
     days_nums = 7
     no_using_list_7 = day_nums_no_using(7)
     no_using_list_15 = day_nums_no_using(15)
+    no_using_list_30 = day_nums_no_using(30)
     print(len(no_using_list_7))
     print(len(no_using_list_15))
+    print(len(no_using_list_30))

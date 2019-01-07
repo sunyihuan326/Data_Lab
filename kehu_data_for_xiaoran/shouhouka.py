@@ -6,7 +6,6 @@ created on 2018/12/17
 '''
 
 import xlwt
-import time
 from utils import connect_mongodb_sheji, connect_es, ts2utcdatetime, day2timestamp
 
 es = connect_es()
