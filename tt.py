@@ -93,7 +93,7 @@ if __name__ == "__main__":
     start_time = day_time_start + " 00:00:00"
     start_timeArray = time.strptime(start_time, "%Y-%m-%d %H:%M:%S")
     star_timeStamp = int(time.mktime(start_timeArray))
-    wx_or = mdb.wx_order.find({"status": 1, "utime": {"$gt": 1543593600, "$lt": 1546272000}})
+    wx_or = mdb.wx_order.find({"status": 1, "utime": {"$gt": 1546272000}})
     amount = 0
     for wx in wx_or:
         amount += int(wx["price"])

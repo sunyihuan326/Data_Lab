@@ -12,7 +12,7 @@ es = connect_es()
 
 
 def distinct_es_search(index, business_version="", button_index="", current_page=""):
-    body1 = {
+    body = {
         "size": 0,
         "aggs": {
             "uv": {
@@ -62,7 +62,7 @@ def distinct_es_search(index, business_version="", button_index="", current_page
 
     }
 
-    res = es.search(index=index, body=body1)  # 获取测试端数据
+    res = es.search(index=index, body=body)  # 获取测试端数据
 
     return res["aggregations"]
 
