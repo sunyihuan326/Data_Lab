@@ -4,8 +4,7 @@ created on 2018/12/11
 
 @author:sunyihuan
 '''
-import sys
-import json
+
 from utils import connect_mongodb_sheji, connect_es
 
 es = connect_es()
@@ -93,18 +92,6 @@ def es_search(index, business_version="", button_index="", current_page=""):
                             "business_version": business_version
                         }
                     }
-                    # ,
-                    # {
-                    #     "term": {
-                    #         "button_index": button_index
-                    #     }
-                    # }
-                    # ,
-                    # {
-                    #     "term": {
-                    #         "current_page": current_page
-                    #     }
-                    # }
                 ],
                 "should": []
             }

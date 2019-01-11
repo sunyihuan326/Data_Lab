@@ -37,7 +37,7 @@ def get_stylist_phone_vip(uid, star_timeStamp):
         try:
             s_name = ss["nickname"]
         except:
-            pass
+            s_name = mdb.person.find_one({"uid": uid})["user_name"]
         if s_vip_time > star_timeStamp:
             s_vip = "vip"
         else:
@@ -51,27 +51,38 @@ def get_vip_stylist_list():
     生成使用售后卡功能的VIP发型师名单，及电话号码
     :return:
     '''
-    day_time_start = "2019-1-2"
-    star_timeStamp = day2timestamp(day_time_start)
-    print(star_timeStamp)
-
-    stylists = get_stylists(star_timeStamp)
-
-    print("使用售后卡人数：", len(stylists))
-    print(stylists)
     w = xlwt.Workbook()
     sh = w.add_sheet("发型师信息")
-    sh.write(0, 0, "姓名")
-    sh.write(0, 2, "电话号码")
-    sh.write(0, 1, "vip")
 
-    for i, sy in enumerate(stylists):
-        sy_id = int(sy)
-        s_vip, s_mobile, s_name = get_stylist_phone_vip(sy_id, star_timeStamp)
-        if s_vip == "vip":
-            sh.write(i + 1, 0, s_name)
-            sh.write(i + 1, 1, s_vip)
-            sh.write(i + 1, 2, s_mobile)
+    day_time_start = "2019-1-4"
+    star_timeStamp0 = day2timestamp(day_time_start)
+    print(star_timeStamp0)
+    for k in range(7):
+        star_timeStamp = star_timeStamp0 + k * 86400
+
+        stylists = get_stylists(star_timeStamp)
+
+        print("使用售后卡人数：", len(stylists))
+        print(stylists)
+
+        import datetime
+        dateArray = datetime.datetime.utcfromtimestamp(star_timeStamp + 36000)
+        otherStyleTime = dateArray.strftime("%Y--%m--%d")
+
+        sh.write(0, 4 * k + 0, otherStyleTime)
+
+        sh.write(1, 4 * k + 0, "姓名")
+        sh.write(1, 4 * k + 1, "电话号码")
+        sh.write(1, 4 * k + 2, "vip")
+
+        for i, sy in enumerate(stylists):
+            sy_id = int(sy)
+            s_vip, s_mobile, s_name = get_stylist_phone_vip(sy_id, star_timeStamp)
+
+            if s_vip == "vip":
+                sh.write(i + 2, 4 * k + 0, s_name)
+                sh.write(i + 2, 4 * k + 2, s_vip)
+                sh.write(i + 2, 4 * k + 1, s_mobile)
 
     w.save("/Users/sunyihuan/Desktop/使用售后卡发型师.xls")
 
