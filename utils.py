@@ -81,3 +81,14 @@ def list_change_type(typ, s_data):
     '''
     s_data = list(map(typ, s_data))
     return s_data
+
+
+def timeStamp2day(timeStamp):
+    '''
+    时间戳转成日期
+    :param timeStamp: 时间戳
+    :return:
+    '''
+    dateArray = datetime.datetime.utcfromtimestamp(timeStamp)
+    otherStyleTime = dateArray.strftime("%Y--%m--%d %H:%M:%S")
+    return otherStyleTime  # 2013--10--10 15:40:00

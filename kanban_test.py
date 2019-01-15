@@ -126,7 +126,7 @@ def changJing_data(day_time_start):
 
 
 if __name__ == "__main__":
-    day_time_start = "2019-1-14"
+    day_time_start = "2019-1-11"
     sheji_st, sheji_st_vip, poster_st, poster_st_vip, stylists, stylists_yes, stylists_vip = changJing_data(
         day_time_start)
 
@@ -137,3 +137,7 @@ if __name__ == "__main__":
     print("今日uv", len(stylists))
     print("昨日留存", len(stylists_yes))
     print("今日uv_vip", len(stylists_vip))
+
+    using = set(list_change_type(str, sheji_st)) | set(list_change_type(str, poster_st))
+    print(len(using))
+    print(len(set(list_change_type(str, stylists)) & using))

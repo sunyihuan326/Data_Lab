@@ -65,8 +65,8 @@ def shouye_button_uv(index, gt_time, lt_time, button_index):
 
 if __name__ == "__main__":
     index = 'user_behavior_log_prod_20180723'  # 线上index
-    start_time = day2timestamp("2019-1-6")  # 当日的日期，转化为当日0点时间戳
-    end_time = day2timestamp("2019-1-7")  # 后一天的日期，转化为后一天0点时间戳
+    start_time = day2timestamp("2019-1-13")  # 当日的日期，转化为当日0点时间戳
+    end_time = day2timestamp("2019-1-14")  # 后一天的日期，转化为后一天0点时间戳
 
     xian_chang_uv = shouye_button_uv(index, start_time, end_time, "002")
     print("现场设计uv：", xian_chang_uv)

@@ -130,3 +130,5 @@ if __name__ == "__main__":
     # print("昨日留存", len(set(stylists) & set(stylists_yestday)))
     #
     # print("今日uv_vip", len(set(stylists) & set(vip_st)))
+    from sklearn.neural_network import MLPClassifier
+    MLPClassifier()
