@@ -126,7 +126,7 @@ def changJing_data(day_time_start):
 
 
 if __name__ == "__main__":
-    day_time_start = "2019-1-2"
+    day_time_start = "2019-1-14"
     sheji_st, sheji_st_vip, poster_st, poster_st_vip, stylists, stylists_yes, stylists_vip = changJing_data(
         day_time_start)
 
