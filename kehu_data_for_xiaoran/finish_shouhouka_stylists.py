@@ -54,7 +54,7 @@ def get_vip_stylist_list():
     w = xlwt.Workbook()
     sh = w.add_sheet("发型师信息")
 
-    day_time_start = "2019-1-4"
+    day_time_start = "2019-1-10"
     star_timeStamp0 = day2timestamp(day_time_start)
     print(star_timeStamp0)
     for k in range(7):

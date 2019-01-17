@@ -68,14 +68,7 @@ def distinct_es_search(index, business_version="", button_index="", current_page
 
 def es_search(index, business_version="", button_index="", current_page=""):
     body1 = {
-        "size": 0,
-        "aggs": {
-            "pv": {
-                "cardinality": {
-                    "field": "_id"
-                }
-            }
-        },
+        "size": 10000,
         "query": {
             "bool": {
                 "must": [
@@ -89,7 +82,7 @@ def es_search(index, business_version="", button_index="", current_page=""):
                     },
                     {
                         "term": {
-                            "business_version": business_version
+                            "business_line": 'meiyezhushou'
                         }
                     }
                 ],
@@ -105,7 +98,7 @@ def es_search(index, business_version="", button_index="", current_page=""):
     }
     res = es.search(index=index, body=body1)  # 获取测试端数据
 
-    return res["aggregations"]
+    return res["hits"]["hits"]
 
 
 if __name__ == "__main__":
@@ -120,4 +113,4 @@ if __name__ == "__main__":
     res_hits = es_search(index_release, business_version)
 
     print(res_uv)
-    print(res_hits)
+    print(len(res_hits))
