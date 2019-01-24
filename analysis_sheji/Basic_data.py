@@ -49,14 +49,45 @@ def basic_data(start_time="2018-12-5", end_time="2019-01-01"):
     return mobile_nums, buy_vip_nums, vip_nums, one_month_expire
 
 
-if __name__ == "__main__":
-    start_time = "2019-1-2"
-    end_time = "2019-1-5"
-    mobile_nums, buy_vip_nums, vip_nums, one_month_expire = basic_data(start_time, end_time)
-    print("已存入手机号码人数： ", mobile_nums)
-    print("购买过VIP人数： ", buy_vip_nums)
-    print("当前VIP人数： ", vip_nums)
-    print("一个月内到期的人数： ", one_month_expire)
+def orders_nums(start_time, end_time):
+    '''
+    销售额
+    :param start_time:
+    :param end_time:
+    :return:
+    '''
+    oders = mdb.wx_order.find(
+        {"status": 1, "type": {"$in": ['v3', 'v1', 'v12']},
+         "utime": {"$gte": start_time, "$lt": end_time}})
+    amounts = 0
+    type = {}
+    for o in oders:
+        amounts += o["price"]
+        typ = o["type"]
+        if typ not in type.keys():
+            type[typ] = 1
+        else:
+            type[typ] = type[typ] + 1
+    return amounts, type
 
-    t_count = twice_buy_vip()
-    print("二次购买人数： ", t_count)
+
+if __name__ == "__main__":
+    # start_time = "2018-1-1"
+    # end_time = "2019-1-1"
+    # mobile_nums, buy_vip_nums, vip_nums, one_month_expire = basic_data(start_time, end_time)
+    # print("已存入手机号码人数： ", mobile_nums)
+    # print("购买过VIP人数： ", buy_vip_nums)
+    # print("当前VIP人数： ", vip_nums)
+    # print("一个月内到期的人数： ", one_month_expire)
+    #
+    # t_count = twice_buy_vip()
+    # print("二次购买人数： ", t_count)
+    amounts, type = orders_nums(1514736000, 1546272000)
+    print(
+        amounts
+    )
+    # platform = ["wx", "ios", "android", "myzsvip"]
+    # for p in platform:
+    #     amounts, type = orders_nums(1514736000, 1546272000)
+    #     print("{}销售额： %.2f".format(p) % amounts)
+    #     print("销售类型：", type)

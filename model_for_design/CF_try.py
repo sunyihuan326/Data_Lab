@@ -72,7 +72,7 @@ def similarity_score(person1, person2):
 
 def pearson_correlation(person1, person2):
     # To get both rated items
-    both_rated = {}
+    both_rated = {}  # 获取目标的keys
     for item in dataset[person1]:
         if item in dataset[person2]:
             both_rated[item] = 1
@@ -121,13 +121,14 @@ def user_reommendations(person):
     # Gets recommendations for a person by using a weighted average of every other user's rankings
     totals = {}
     simSums = {}
-    rankings_list = []
+
     for other in dataset:
         # don't compare me to myself
         if other == person:
             continue
+        print(other)
         sim = pearson_correlation(person, other)
-        # print ">>>>>>>",sim
+        print(">>>>>>>", sim)
 
         # ignore scores of zero or lower
         if sim <= 0:
@@ -146,6 +147,7 @@ def user_reommendations(person):
     # Create the normalized list
 
     rankings = [(total / simSums[item], item) for item, total in totals.items()]
+    print("rankings", rankings)
     rankings.sort()
     rankings.reverse()
     # returns the recommended items
