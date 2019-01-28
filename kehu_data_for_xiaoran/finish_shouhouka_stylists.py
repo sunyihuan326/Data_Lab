@@ -11,6 +11,24 @@ from utils import connect_es, connect_mongodb_sheji, ts2utcdatetime, day2timesta
 mdb = connect_mongodb_sheji()  # 链接sheji
 
 
+def get_card_nums(star_timeStamp, end_timStamp):
+    '''
+    售后卡生成情况，生成数量、被领取量
+    :param star_timeStamp:开始时间，时间戳
+    :param end_timStamp:结束时间，时间戳
+    :return:
+    all_cards_nums：完成的售后卡数量
+    coustomer_get_cards_nums：被顾客领取的数量
+    '''
+    all_cards_nums = mdb.customer_card_after.find({"ctime": {"$gt": ts2utcdatetime(star_timeStamp),
+                                                             "$lt": ts2utcdatetime(end_timStamp)},
+                                                   "status": 101}).count()
+    coustomer_get_cards_nums = mdb.customer_card_after.find({"ctime": {"$gt": ts2utcdatetime(star_timeStamp),
+                                                                       "$lt": ts2utcdatetime(end_timStamp)},
+                                                             "status": 101, "is_get": 1}).count()
+    return all_cards_nums, coustomer_get_cards_nums
+
+
 def get_stylists(star_timeStamp):
     stylists = mdb.customer_card_after.distinct("myid",
                                                 {"ctime": {"$gt": ts2utcdatetime(star_timeStamp + 0 * 86400),
@@ -88,4 +106,11 @@ def get_vip_stylist_list():
 
 
 if __name__ == "__main__":
-    get_vip_stylist_list()
+    # get_vip_stylist_list()
+    start_time = "2019-1-28"
+    end_time = "2019-1-29"
+    start_time = day2timestamp(start_time)
+    end_time = day2timestamp(end_time)
+    all_cards_nums, coustomer_get_cards_nums = get_card_nums(start_time, end_time)
+    print("售后卡总数量：", all_cards_nums)
+    print("被领取数量：", coustomer_get_cards_nums)

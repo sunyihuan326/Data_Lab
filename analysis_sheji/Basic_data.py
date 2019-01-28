@@ -73,19 +73,19 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
 
 
 if __name__ == "__main__":
-    start_time = "2019-1-1"
+    start_time = "2019-1-28"
     end_time = "2019-1-29"
     start_time = day2timestamp(start_time)
     end_time = day2timestamp(end_time)
 
-    mobile_nums, buy_vip_nums, vip_nums, one_month_expire = basic_data(start_time, end_time)
-    print("已存入手机号码人数： ", mobile_nums)
-    print("购买过VIP人数： ", buy_vip_nums)
-    print("当前VIP人数： ", vip_nums)
-    print("一个月内到期的人数： ", one_month_expire)
-
-    t_count = twice_buy_vip()
-    print("二次购买人数： ", t_count)
+    # mobile_nums, buy_vip_nums, vip_nums, one_month_expire = basic_data(start_time, end_time)
+    # print("已存入手机号码人数： ", mobile_nums)
+    # print("购买过VIP人数： ", buy_vip_nums)
+    # print("当前VIP人数： ", vip_nums)
+    # print("一个月内到期的人数： ", one_month_expire)
+    #
+    # t_count = twice_buy_vip()
+    # print("二次购买人数： ", t_count)
 
     amounts, type = orders_nums(start_time, end_time)
     print("销售额： %.2f" % amounts)
