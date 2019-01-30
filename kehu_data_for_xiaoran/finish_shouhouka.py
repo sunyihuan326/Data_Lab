@@ -107,8 +107,8 @@ def get_vip_stylist_list():
 
 if __name__ == "__main__":
     # get_vip_stylist_list()
-    start_time = "2019-1-28"
-    end_time = "2019-1-29"
+    start_time = "2019-1-27"
+    end_time = "2019-1-28"
     start_time = day2timestamp(start_time)
     end_time = day2timestamp(end_time)
     all_cards_nums, coustomer_get_cards_nums = get_card_nums(start_time, end_time)
