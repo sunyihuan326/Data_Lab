@@ -92,3 +92,55 @@ def timeStamp2day(timeStamp):
     dateArray = datetime.datetime.utcfromtimestamp(timeStamp)
     otherStyleTime = dateArray.strftime("%Y--%m--%d %H:%M:%S")
     return otherStyleTime  # 2013--10--10 15:40:00
+
+
+def get_stylist_phone_vip(uid, star_timeStamp):
+    '''
+    获取发型师电话号码和VIP信息
+    :param uid:
+    :return:
+    '''
+    mdb = connect_mongodb_sheji()
+    s = mdb.wxuser.find({"_id": uid})
+    s_vip = "非vip"
+    s_mobile = ""
+    s_name = ""
+    for ss in s:
+        s_vip_time = ss["expireat"]
+        s_mobile = ss["mobile"]
+        print(s_mobile)
+        try:
+            s_name = ss["nickname"]
+        except:
+            s_name = mdb.person.find_one({"uid": uid})["user_name"]
+        if s_vip_time > star_timeStamp:
+            s_vip = "vip"
+        else:
+            s_vip = "非vip"
+
+    return s_vip, s_mobile, s_name
+
+
+def stylists_2_excel(stylists, star_timeStamp, save_file_name):
+    '''
+    生成发型师名单，及电话号码,并存储在save_file_name中
+    :param stylists:发型师列表
+    :param star_timeStamp:时间戳，判断是否为vip
+    :param save_file_name:保存文件名称
+    :return:
+    '''
+    import xlwt
+    w = xlwt.Workbook()
+    sh = w.add_sheet("发型师信息")
+    sh.write(0, 0, "姓名")
+    sh.write(0, 2, "电话号码")
+    sh.write(0, 1, "vip")
+
+    for i, sy in enumerate(stylists):
+        sy_id = int(sy)
+        s_vip, s_mobile, s_name = get_stylist_phone_vip(sy_id, star_timeStamp)
+        sh.write(i + 1, 0, s_name)
+        sh.write(i + 1, 1, s_vip)
+        sh.write(i + 1, 2, s_mobile)
+
+    w.save(save_file_name)
