@@ -4,12 +4,12 @@ created on 2019/1/30
 
 @author:sunyihuan
 '''
-butie_level_1 = 100  # 成交一单
+butie_level_1 = 50  # 成交一单
 butie_level_2_ratio = 40  # [2,10）每成交一单的奖励
-butie_level_3 = 300  # 满15单奖励
-butie_level_4 = 500  # 满25单奖励
-butie_level_5 = 1000  # 满50单奖励
-butie_level_6 = 2000  # 满100单奖励
+butie_level_3 = 100  # 满25单奖励
+butie_level_4 = 300  # 50单奖励
+butie_level_5 = 500  # 满100单奖励
+butie_level_6 = 1000  # 满200单奖励
 
 
 def shuiDian(sales, cost):
@@ -46,7 +46,7 @@ def experience_profit(orders, he_ratio, wang_ratio):
     :return:profit_all：毛利润
     '''
     sales = orders * 300
-    costs = orders * (40 + 4 * 10)
+    costs = orders * (50 + 4 * 10)
     fencheng = fenCheng(sales, he_ratio, wang_ratio)
     shui = shuiDian(sales, costs)
     profit_all = sales - costs - fencheng - shui
@@ -63,13 +63,15 @@ def wangdian_reward_money(orders):
         butie = butie_level_1
     elif orders >= 2 and orders <= 10:
         butie = (orders - 1) * butie_level_2_ratio + butie_level_1
-    elif orders >= 15 and orders < 25:
-        butie = butie_level_1 + 9 * butie_level_2_ratio + butie_level_3
+    elif orders > 10 and orders < 25:
+        butie = 9 * butie_level_2_ratio + butie_level_1
     elif orders >= 25 and orders < 50:
-        butie = butie_level_1 + 9 * butie_level_2_ratio + butie_level_3 + butie_level_4
+        butie = butie_level_1 + 9 * butie_level_2_ratio + butie_level_3
     elif orders >= 50 and orders < 100:
+        butie = butie_level_1 + 9 * butie_level_2_ratio + butie_level_3 + butie_level_4
+    elif orders >= 100 and orders < 200:
         butie = butie_level_1 + 9 * butie_level_2_ratio + butie_level_3 + butie_level_4 + butie_level_5
-    elif orders >= 100:
+    elif orders >= 200:
         butie = butie_level_1 + 9 * butie_level_2_ratio + butie_level_3 + \
                 butie_level_4 + butie_level_5 + butie_level_6
     else:
@@ -88,16 +90,23 @@ def experience_net_profit(orders, he_ratio, wang_ratio):
     freight = orders * 2  # 运费
     print("毛利：", experience_pro - freight)
     damage_nums = int((orders * 4) / 6)  # 退货量
-    damage_costs = damage_nums * (40 + 4 * 10) + damage_nums * 2  # 40%退货中平台的成本
+    damage_costs = damage_nums * (10 + 4 * 10) + damage_nums * 2  # 40%退货中平台的成本
     print("退货成本：", damage_costs)
-    wangdian_re_money = wangdian_reward_money(orders) + 500  # 奖励金总额，500元月奖励金额
-    net_pro = experience_pro - freight - damage_costs - wangdian_re_money
+    wangdian_re_money = wangdian_reward_money(orders)  # 奖励金总额，500元月奖励金额
+    # wangdian_re_money = 0
+    print("奖励金:", round(wangdian_re_money + int(orders / 20) * 300, 2))
+    net_pro = experience_pro - freight - damage_costs - round(wangdian_re_money + int(orders / 20) * 300, 2)
     return round(net_pro, 2)
 
 
 if __name__ == "__main__":
-    he_ratio = 0.15  # 合伙人提成比例
-    wang_ratio = 0.3  # 网点提成比例
-    orders = 100  # 订单量
+    he_ratio = 0.1  # 合伙人提成round(wangdian_re_money + int(orders / 15) * 200, 2)比例
+    wang_ratio = 0.25  # 网点提成比例
+    orders = 20  # 订单量
     experience_net = experience_net_profit(orders, he_ratio, wang_ratio)
-    print(experience_net)
+    print(round(experience_net, 2))
+    # experience_pro = experience_profit(15, he_ratio, wang_ratio)  # 毛利润
+    # print("毛利：", experience_pro - 15 * 2)
+    # damage_nums = int((15 * 4) / 6)  # 退货量
+    # damage_costs = damage_nums * (40 + 4 * 10) + damage_nums * 2  # 40%退货中平台的成本
+    # print(round(experience_pro-damage_costs-200))
