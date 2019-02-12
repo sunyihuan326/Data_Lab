@@ -21,8 +21,8 @@ def yandan_profit(buy_nums, give_nums, he_ratio, wang_ratio):
     profit = sales - costs - fencheng - shui - 8
     return profit
 
-#
-# if __name__ == "__main__":
-#     he_ratio = 0.15  # 合伙人提成比例
-#     wang_ratio = 0.3  # 网点提成比例
-#     print(yandan_profit(7, 3, he_ratio, wang_ratio))
+
+if __name__ == "__main__":
+    he_ratio = 0.15  # 合伙人提成比例
+    wang_ratio = 0.3  # 网点提成比例
+    print(yandan_profit(7, 3, he_ratio, wang_ratio))

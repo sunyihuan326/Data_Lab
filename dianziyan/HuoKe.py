@@ -1,6 +1,6 @@
 # coding:utf-8 
 '''
-created on 2019/1/30
+created on 2019/2/12
 
 @author:sunyihuan
 '''
@@ -88,14 +88,16 @@ def experience_net_profit(orders, he_ratio, wang_ratio):
     '''
     experience_pro = experience_profit(orders, he_ratio, wang_ratio)  # 毛利润
     freight = orders * 2  # 运费
-    print("毛利：", experience_pro - freight)
+    print("毛利：", round(experience_pro - freight, 2))
     damage_nums = int((orders * 4) / 6)  # 退货量
     damage_costs = damage_nums * (10 + 4 * 10) + damage_nums * 2  # 40%退货中平台的成本
     print("退货成本：", damage_costs)
     wangdian_re_money = wangdian_reward_money(orders)  # 奖励金总额，500元月奖励金额
     # wangdian_re_money = 0
-    print("奖励金:", round(wangdian_re_money + int(orders / 15) * 200, 2))
-    net_pro = experience_pro - freight - damage_costs - round(wangdian_re_money + int(orders / 15) * 200, 2)
+    # print("奖励金:", round(wangdian_re_money + int(orders / 15) * 200, 2))
+    jianglijin = round(wangdian_re_money, 2)
+    print("奖励金:", jianglijin)
+    net_pro = experience_pro - freight - damage_costs - jianglijin
     return round(net_pro, 2)
 
 
@@ -103,10 +105,8 @@ if __name__ == "__main__":
     he_ratio = 0.1  # 合伙人提成比例
     wang_ratio = 0.27  # 网点提成比例
     orders = 15  # 订单量
-    experience_net = experience_net_profit(orders, he_ratio, wang_ratio)
-    print(round(experience_net, 2))
-    # experience_pro = experience_profit(15, he_ratio, wang_ratio)  # 毛利润
-    # print("毛利：", experience_pro - 15 * 2)
-    # damage_nums = int((15 * 4) / 6)  # 退货量
-    # damage_costs = damage_nums * (40 + 4 * 10) + damage_nums * 2  # 40%退货中平台的成本
-    # print(round(experience_pro-damage_costs-200))
+    yue = 200  # 月奖励金额
+    print("销售额：", orders * 300)
+    experience_net = round(experience_net_profit(orders, he_ratio, wang_ratio), 2) - yue
+    print("净利润：", experience_net)
+    print("平台利润率：{:.2%}".format(experience_net / (orders * 300)))

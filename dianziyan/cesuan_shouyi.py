@@ -55,9 +55,9 @@ def gan_one_profit(days, he_ratio, wang_ratio):
 
 
 if __name__ == "__main__":
-    days = 200
-    he_ratio = 0.15  # 合伙人提成比例
-    wang_ratio = 0.3  # 网点提成比例
+    days = 30
+    he_ratio = 0.1  # 合伙人提成比例
+    wang_ratio = 0.25  # 网点提成比例
     yandan_frequency = 3  # 一颗烟弹抽的天数
     yandan_pro = yandan_one_profit(days, yandan_frequency, he_ratio, wang_ratio)
     gans_pro = gan_one_profit(days, he_ratio, wang_ratio)
