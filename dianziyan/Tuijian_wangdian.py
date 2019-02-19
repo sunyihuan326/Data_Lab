@@ -8,21 +8,21 @@ from dianziyan.HuoKe import experience_net_profit
 
 
 def wangdian_recommend_profits(orders):
-    pro = experience_net_profit(orders, 0.08, 0.27)
-    if orders < 25:
+    pro = experience_net_profit(orders, 0.1, 0.27)
+    if orders < 15:
         jiangLi = 0
-    elif orders == 25:
-        jiangLi = 300
+    elif orders == 15:
+        jiangLi = 500
     else:
-        jiangLi = 300 + orders * 300 * 0.02
+        jiangLi = 500 + orders * 300 * 0.02
     profits = pro - jiangLi
     return round(profits, 2)
 
 
 if __name__ == "__main__":
-    orders = 25
+    orders =100
 
-    profit = wangdian_recommend_profits(orders) - 200
+    profit = wangdian_recommend_profits(orders)
 
     print("净利：", round(profit, 2))
     print("利润率：{:.2%}".format(profit / (orders * 300)))

@@ -25,8 +25,10 @@ def yandan_one_profit(nums_buys, nums_gives, he_ratio, wang_ratio):
 
 
 if __name__ == "__main__":
-    he_ratio = 0.1  # 合伙人提成比例
-    wang_ratio = 0.27  # 网点提成比例
+    # he_ratio = 0.1  # 合伙人提成比例
+    # wang_ratio = 0.27  # 网点提成比例
+    he_ratio = 0  # 合伙人提成比例
+    wang_ratio = 0  # 网点提成比例
     nums_buys = 10  # 实际支付数量
     nums_gives = 0  # 赠送数量
 

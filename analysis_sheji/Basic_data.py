@@ -57,13 +57,21 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
     :param platform:支付平台
     :return:
     '''
+    # oders = mdb.wx_order.find(
+    #     {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]}, 'platform': {"$in": platform},
+    #      "utime": {"$gte": start_time, "$lt": end_time}})
     oders = mdb.wx_order.find(
-        {"status": 1, "type": {"$in": ['v3', 'v1', 'v12']}, 'platform': {"$in": platform},
-         "utime": {"$gte": start_time, "$lt": end_time}})
+        {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]},
+         "utime": {"$gt": start_time, "$lt": end_time}})
     amounts = 0
     type = {}
     for o in oders:
         amounts += o["price"]
+        uid = o["uid"]
+        u = mdb.wxuser.find_one({"_id": uid})
+        if "inline" in u.keys():
+            if u["inline"] == 1:
+                amounts -= o["price"]
         typ = o["type"]
         if typ not in type.keys():
             type[typ] = 1
@@ -73,10 +81,12 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
 
 
 if __name__ == "__main__":
-    start_time = "2019-2-1"
-    end_time = "2019-3-1"
+    start_time = "2019-2-18"
+    end_time = "2019-2-19"
     start_time = day2timestamp(start_time)
+    print(start_time)
     end_time = day2timestamp(end_time)
+    print(end_time)
 
     # mobile_nums, buy_vip_nums, vip_nums, one_month_expire = basic_data(start_time, end_time)
     # print("已存入手机号码人数： ", mobile_nums)
