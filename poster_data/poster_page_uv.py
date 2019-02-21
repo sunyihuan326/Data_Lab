@@ -62,7 +62,7 @@ def DaoHang_uv(index, gt_time, lt_time, current_page):
 
 if __name__ == "__main__":
     index = 'user_behavior_log_prod_20180723'  # 线上index
-    start_time0 = day2timestamp("2019-1-8")  # 当日的日期，转化为当日0点时间戳
+    start_time0 = day2timestamp("2019-2-13")  # 当日的日期，转化为当日0点时间戳
     for i in range(7):
         start_time = start_time0 + 86400 * i
         end_time = start_time + 86400
