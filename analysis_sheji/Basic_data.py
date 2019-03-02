@@ -5,7 +5,6 @@ created on 2018/12/5
 @author:sunyihuan
 '''
 
-import time
 from utils import ts2utcdatetime, connect_mongodb_sheji, connect_es, day2timestamp
 
 mdb = connect_mongodb_sheji()  # 链接sheji
@@ -57,32 +56,35 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
     :param platform:支付平台
     :return:
     '''
-    oders = mdb.wx_order.find(
-        {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]}, 'platform': {"$in": platform},
-         "utime": {"$gte": start_time, "$lt": end_time}})
     # oders = mdb.wx_order.find(
-    #     {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]},
+    #     {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]}, 'platform': {"$in": platform},
     #      "utime": {"$gte": start_time, "$lt": end_time}})
+    oders = mdb.wx_order.find(
+        {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]},
+         "utime": {"$gte": start_time, "$lt": end_time}})
     amounts = 0
     type = {}
     for o in oders:
         amounts += o["price"]
-        uid = o["uid"]
-        u = mdb.wxuser.find_one({"_id": uid})
-        if "inline" in u.keys():
-            if u["inline"] == 1:
-                amounts -= o["price"]
-        typ = o["type"]
-        if typ not in type.keys():
-            type[typ] = 1
+        try:
+            uid = o["uid"]
+            u = mdb.wxuser.find_one({"_id": uid})
+            if "inline" in u.keys():
+                if u["inline"] == 1:
+                    amounts -= o["price"]
+            typ = o["type"]
+            if typ not in type.keys():
+                type[typ] = 1
+        except:
+            print(o)
         else:
             type[typ] = type[typ] + 1
     return amounts, type
 
 
 if __name__ == "__main__":
-    start_time = "2019-2-21"
-    end_time = "2019-2-22"
+    start_time = "2019-2-22"
+    end_time = "2019-2-23"
     start_time = day2timestamp(start_time)
     print(start_time)
     end_time = day2timestamp(end_time)
