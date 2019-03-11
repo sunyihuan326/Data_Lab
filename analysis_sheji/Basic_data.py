@@ -83,8 +83,8 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
 
 
 if __name__ == "__main__":
-    start_time = "2019-2-22"
-    end_time = "2019-2-23"
+    start_time = "2019-3-1"
+    end_time = "2019-3-31"
     start_time = day2timestamp(start_time)
     print(start_time)
     end_time = day2timestamp(end_time)

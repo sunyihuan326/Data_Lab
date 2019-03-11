@@ -83,7 +83,6 @@ def ts2utcdatetime(ts):
     return datetime.datetime.utcfromtimestamp(ts)
 
 
-
 mdbs = MongoClient('dds-bp1c30e6691173a41935-pub.mongodb.rds.aliyuncs.com', 3717,
                    unicode_decode_error_handler='ignore')  # 链接mongodb
 mdbs.admin.authenticate('root', 'mongo2018Swkj', mechanism='SCRAM-SHA-1')  # 账号密码认证
@@ -134,4 +133,3 @@ if __name__ == "__main__":
     from sklearn.neural_network import MLPClassifier
 
     MLPClassifier()
-
