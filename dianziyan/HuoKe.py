@@ -4,13 +4,13 @@ created on 2019/2/12
 
 @author:sunyihuan
 '''
-butie_level_1 = 80  # 成交一单
+butie_level_1 = 100  # 成交一单
 butie_level_2 = 100  # 满5单奖励
-butie_level_3 = 100  # 满10单奖励
-butie_level_4 = 200  # 满15单奖励
-butie_level_5 = 300  # 满25单奖励
-butie_level_6 = 500  # 满50单奖励
-butie_level_7 = 1000  # 满100单奖励
+butie_level_3 = 200  # 满10单奖励
+butie_level_4 = 300  # 满15单奖励
+butie_level_5 = 500  # 满25单奖励
+butie_level_6 = 1000  # 满50单奖励
+butie_level_7 = 2000  # 满100单奖励
 
 
 def shuiDian(sales, cost):
@@ -21,9 +21,9 @@ def shuiDian(sales, cost):
     :return:
     '''
     # 销项税
-    xiao_shui = (sales / 1.16) * 0.16
+    xiao_shui = (sales / 1.13) * 0.13
     # 进项税
-    jin_shui = (cost / 1.16) * 0.16
+    jin_shui = (cost / 1.13) * 0.13
     return round(xiao_shui - jin_shui, 2)
 
 
@@ -49,9 +49,28 @@ def experience_profit(orders, he_ratio, wang_ratio):
     sales = orders * 300
     costs = orders * (50 + 4 * 10)
     fencheng = fenCheng(sales, he_ratio, wang_ratio)
-    shui = shuiDian(sales-fencheng, costs)
+    shui = shuiDian(sales - fencheng, costs)
     profit_all = sales - costs - fencheng - shui
     return profit_all
+
+
+def damage_costs(orders, return_rate, free_quota):
+    '''
+    退款退货成本
+    :param orders: 成交订单量
+    :param orders: 退货率
+    :param orders: 免费体验券数量
+    :return: damage_costs退款退货平台的总成本
+    '''
+    damage_orders = int(orders * return_rate / (1 - return_rate))  # 退货量
+    if damage_orders > free_quota:
+        buy_quotas = damage_orders - free_quota
+    else:
+        buy_quotas = 0
+    print(buy_quotas)
+
+    damage_costs = damage_orders * (10 + 4 * 10 + 6) - buy_quotas * 20  # 退货平台成本
+    return damage_costs
 
 
 def wangdian_reward_money(orders):
@@ -89,28 +108,24 @@ def experience_net_profit(orders, he_ratio, wang_ratio):
     :return:
     '''
     experience_pro = experience_profit(orders, he_ratio, wang_ratio)  # 毛利润
-    freight = orders * 2  # 运费
+    freight = orders * 6  # 运费
     # print("毛利：", round(experience_pro - freight, 2))
-    damage_nums = int((orders * 4) / 6)  # 退货量
-    damage_costs = damage_nums * (10 + 4 * 10) + damage_nums * 2  # 40%退货中平台的成本
-    # print("退货成本：", damage_costs)
-    wangdian_re_money = wangdian_reward_money(orders)  # 奖励金总额，500元月奖励金额
+    damage_cost = damage_costs(orders, 0.4, 30)  # 40%退货率、30个体验名额
+    print("退货成本：", damage_cost)
+    wangdian_re_money = wangdian_reward_money(orders)  # 奖励金总额
     # wangdian_re_money = 0
     # print("奖励金:", round(wangdian_re_money + int(orders / 15) * 200, 2))
     jianglijin = round(wangdian_re_money, 2)
-    # print("奖励金:", jianglijin)
-    net_pro = experience_pro - freight - damage_costs - jianglijin
+    print("奖励金:", jianglijin)
+    net_pro = experience_pro - freight - damage_cost - jianglijin
     return round(net_pro, 2), jianglijin
 
 
-if __name__ == "__main__":
-    he_ratio = 0.12  # 合伙人提成比例
-    wang_ratio = 0.27  # 网点提成比例
-    # orders = 25  # 订单量
-    # print("销售额：", orders * 300)
-    # experience_net, jianglijin = experience_net_profit(orders, he_ratio, wang_ratio)
-    # print("净利润：", experience_net)
-    # print("平台利润率：{:.2%}".format(experience_net / (orders * 300)))
+def JiangLiJin_result2excel():
+    '''
+    奖励金奖励后，平台利润写入excel表格
+    :return:
+    '''
     import xlwt
 
     w = xlwt.Workbook()
@@ -133,4 +148,16 @@ if __name__ == "__main__":
         sh.write(orders, 2, jianglijin)
         sh.write(orders, 3, round(experience_net, 2))
         sh.write(orders, 4, "{:.2%}".format(experience_net / (orders * 300)))
-    w.save("/Users/sunyihuan/Desktop/JiangLiJin0.xls")
+    w.save("/Users/sunyihuan/Desktop/JiangLiJin1.xls")
+
+
+if __name__ == "__main__":
+    he_ratio = 0.12  # 合伙人提成比例
+    wang_ratio = 0.23  # 网点提成比例
+    orders = 24  # 订单量
+    print("销售额：", orders * 300)
+    experience_net, jianglijin = experience_net_profit(orders, he_ratio, wang_ratio)
+    print("净利润：", experience_net)
+    print("平台利润率：{:.2%}".format(experience_net / (orders * 300)))
+    JiangLiJin_result2excel()
+    # print(shuiDian(300-105,90))

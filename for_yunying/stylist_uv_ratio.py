@@ -115,11 +115,10 @@ def stylist_ctime_distibution():
 
 
 if __name__ == "__main__":
-    print(1)
-    # g_year, twelve_month_nums, six_month_nums, one_month_nums = stylist_ctime_distibution()
-    #
-    # all_nums = g_year + twelve_month_nums + six_month_nums + one_month_nums
-    # print("近7天总uv数：", all_nums)
+    g_year, twelve_month_nums, six_month_nums, one_month_nums = stylist_ctime_distibution()
+
+    all_nums = g_year + twelve_month_nums + six_month_nums + one_month_nums
+    print("近7天总uv数：", all_nums)
     #
     # print("一年前注册：{:.2%}".format(g_year / all_nums))
     # print("6个月至一年前注册：{:.2%}".format(twelve_month_nums / all_nums))

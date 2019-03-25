@@ -15,9 +15,11 @@ def twice_buy_vip():
     二次及以上购买vip人数
     :return:
     '''
-    orders = mdb.wx_order.find({"status": 1})
+    orders = mdb.wx_order.find(
+        {"status": 1, "type": {"$in": ['v12']}})
     orders_count = {}
     t_count = 0
+    t_uid = []
     for p in orders:
         try:
             u_id = p["uid"]
@@ -30,7 +32,8 @@ def twice_buy_vip():
     for k in orders_count.keys():
         if orders_count[k] > 1:
             t_count += 1
-    return t_count
+            t_uid.append(k)
+    return t_count, t_uid
 
 
 def basic_data(start_time=1546272000, end_time=1548691200):
@@ -89,16 +92,17 @@ if __name__ == "__main__":
     print(start_time)
     end_time = day2timestamp(end_time)
     print(end_time)
-
+    #
     # mobile_nums, buy_vip_nums, vip_nums, one_month_expire = basic_data(start_time, end_time)
     # print("已存入手机号码人数： ", mobile_nums)
     # print("购买过VIP人数： ", buy_vip_nums)
     # print("当前VIP人数： ", vip_nums)
     # print("一个月内到期的人数： ", one_month_expire)
     #
-
-    # t_count = twice_buy_vip()
+    #
+    # t_count, t_uid = twice_buy_vip()
     # print("二次购买人数： ", t_count)
+    # print(t_uid)
 
     amounts, type = orders_nums(start_time, end_time)
     print("销售额： %.2f" % amounts)
