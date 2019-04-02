@@ -103,10 +103,11 @@ def data_bar(data_classes, data_value, data_label):
     plt.ylabel('value')
     plt.show()
 
-# print(poster_uv_everyday_distribution("2018-11-23"))
-# print(poster_uv_everyday("2018-11-23"))
 
-# print(get_everday_poster_using("20181123"))
+# print(poster_uv_everyday_distribution("2019-3-31"))
+# print(poster_uv_everyday("2019-3-31"))
+
+print(get_everday_poster_using("20190331"))
 #
 # poster_using_time = poster_using_time()
 # data_classes = poster_using_time.keys()

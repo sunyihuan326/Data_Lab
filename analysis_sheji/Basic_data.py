@@ -1,11 +1,14 @@
 # coding:utf-8 
 '''
+基础数据查询，如：已存入手机号码人数、购买过VIP人数、当前VIP人数、一个月内到期的人数、二次购买人数、
+                销售额，等等
+
 created on 2018/12/5
 
 @author:sunyihuan
 '''
 
-from utils import ts2utcdatetime, connect_mongodb_sheji, connect_es, day2timestamp
+from utils import connect_mongodb_sheji, day2timestamp
 
 mdb = connect_mongodb_sheji()  # 链接sheji
 
@@ -87,7 +90,7 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
 
 if __name__ == "__main__":
     start_time = "2019-3-1"
-    end_time = "2019-3-31"
+    end_time = "2019-4-1"
     start_time = day2timestamp(start_time)
     print(start_time)
     end_time = day2timestamp(end_time)

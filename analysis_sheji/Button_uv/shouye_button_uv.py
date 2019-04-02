@@ -1,5 +1,8 @@
 # coding:utf-8 
 '''
+
+首页各按钮访问uv
+
 created on 2019/1/7
 
 @author:sunyihuan
@@ -166,8 +169,8 @@ def save2excel(end_time):
 
 if __name__ == "__main__":
     index = 'user_behavior_log_prod_20180723'  # 线上index
-    start_time = day2timestamp("2019-3-22")  # 当日的日期，转化为当日0点时间戳
-    end_time = day2timestamp("2019-3-23")  # 后一天的日期，转化为后一天0点时间戳
+    start_time = day2timestamp("2019-3-31")  # 当日的日期，转化为当日0点时间戳
+    end_time = day2timestamp("2019-4-1")  # 后一天的日期，转化为后一天0点时间戳
 
     shouye_uv = shouye_page_uv(index, start_time, end_time, "app-001")
 

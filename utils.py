@@ -1,5 +1,7 @@
 # coding:utf-8 
 '''
+链接数据库、es、时间转换等公用方法
+
 created on 2019/1/3
 
 @author:sunyihuan
