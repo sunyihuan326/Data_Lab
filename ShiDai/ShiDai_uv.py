@@ -1,5 +1,7 @@
 # coding:utf-8 
 '''
+试戴模块使用信息
+
 created on 2019/3/2
 
 @author:sunyihuan

@@ -1,5 +1,7 @@
 # coding:utf-8 
 '''
+发型师个人基础数据分布
+
 created on 2018/11/10
 
 @author:sunyihuan

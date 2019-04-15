@@ -62,12 +62,12 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
     :param platform:支付平台
     :return:
     '''
-    # oders = mdb.wx_order.find(
-    #     {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]}, 'platform': {"$in": platform},
-    #      "utime": {"$gte": start_time, "$lt": end_time}})
     oders = mdb.wx_order.find(
-        {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]},
+        {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]}, 'platform': {"$in": platform},
          "utime": {"$gte": start_time, "$lt": end_time}})
+    # oders = mdb.wx_order.find(
+    #     {"status": 1, "type": {"$in": ['v3', 'v1', 'v12', "v6_zs", "extension"]},
+    #      "utime": {"$gte": start_time, "$lt": end_time}})
     amounts = 0
     type = {}
     for o in oders:
@@ -89,8 +89,8 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
 
 
 if __name__ == "__main__":
-    start_time = "2019-3-1"
-    end_time = "2019-4-1"
+    start_time = "2019-4-1"
+    end_time = "2019-5-1"
     start_time = day2timestamp(start_time)
     print(start_time)
     end_time = day2timestamp(end_time)
