@@ -89,8 +89,8 @@ def orders_nums(start_time, end_time, platform=["wx", "ios", "android", "myzsvip
 
 
 if __name__ == "__main__":
-    start_time = "2019-4-1"
-    end_time = "2019-5-1"
+    start_time = "2019-5-1"
+    end_time = "2019-6-1"
     start_time = day2timestamp(start_time)
     print(start_time)
     end_time = day2timestamp(end_time)
@@ -109,3 +109,4 @@ if __name__ == "__main__":
 
     amounts, type = orders_nums(start_time, end_time)
     print("销售额： %.2f" % amounts)
+    print("种类：", type)

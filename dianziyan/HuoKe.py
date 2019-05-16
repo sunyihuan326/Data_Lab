@@ -1,8 +1,17 @@
 # coding:utf-8 
 '''
+网点托客平台利润计算
+
 created on 2019/2/12
 
 @author:sunyihuan
+'''
+
+
+
+
+'''
+奖励金设置
 '''
 butie_level_1 = 100  # 成交一单
 butie_level_2 = 100  # 满5单奖励
@@ -154,10 +163,10 @@ def JiangLiJin_result2excel():
 if __name__ == "__main__":
     he_ratio = 0.12  # 合伙人提成比例
     wang_ratio = 0.23  # 网点提成比例
-    orders = 24  # 订单量
+    orders = 200  # 订单量
     print("销售额：", orders * 300)
     experience_net, jianglijin = experience_net_profit(orders, he_ratio, wang_ratio)
     print("净利润：", experience_net)
     print("平台利润率：{:.2%}".format(experience_net / (orders * 300)))
-    JiangLiJin_result2excel()
+    # JiangLiJin_result2excel()
     # print(shuiDian(300-105,90))

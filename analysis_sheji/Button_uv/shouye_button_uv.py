@@ -169,8 +169,8 @@ def save2excel(end_time):
 
 if __name__ == "__main__":
     index = 'user_behavior_log_prod_20180723'  # 线上index
-    start_time = day2timestamp("2019-4-9")  # 当日的日期，转化为当日0点时间戳
-    end_time = day2timestamp("2019-4-10")  # 后一天的日期，转化为后一天0点时间戳
+    start_time = day2timestamp("2019-5-14")  # 当日的日期，转化为当日0点时间戳
+    end_time = day2timestamp("2019-5-15")  # 后一天的日期，转化为后一天0点时间戳
 
     shouye_uv = shouye_page_uv(index, start_time, end_time, "app-001")
 
