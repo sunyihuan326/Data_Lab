@@ -157,16 +157,16 @@ def JiangLiJin_result2excel():
         sh.write(orders, 2, jianglijin)
         sh.write(orders, 3, round(experience_net, 2))
         sh.write(orders, 4, "{:.2%}".format(experience_net / (orders * 300)))
-    w.save("/Users/sunyihuan/Desktop/JiangLiJin1.xls")
+    w.save("/Users/sunyihuan/Desktop/JiangLiJin_final.xls")
 
 
 if __name__ == "__main__":
     he_ratio = 0.12  # 合伙人提成比例
     wang_ratio = 0.23  # 网点提成比例
-    orders = 200  # 订单量
+    orders = 100  # 订单量
     print("销售额：", orders * 300)
     experience_net, jianglijin = experience_net_profit(orders, he_ratio, wang_ratio)
     print("净利润：", experience_net)
     print("平台利润率：{:.2%}".format(experience_net / (orders * 300)))
-    # JiangLiJin_result2excel()
+    JiangLiJin_result2excel()
     # print(shuiDian(300-105,90))
